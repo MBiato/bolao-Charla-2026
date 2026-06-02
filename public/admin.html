@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Bolao Copa 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;color:#1a1a1a}
+.header{background:#0D4F2E;padding:1rem 1.25rem;display:flex;align-items:center;gap:.75rem}
+.header h1{color:#FFD700;font-size:1.1rem;font-weight:600;flex:1}
+.header a{color:#9FE1CB;font-size:.8rem;text-decoration:none}
+.wrap{padding:1rem;max-width:500px;margin:0 auto}
+input,select{width:100%;height:42px;border:1.5px solid #ddd;border-radius:8px;padding:0 .75rem;font-size:.95rem;background:#fff;color:#1a1a1a;margin-bottom:.6rem}
+input:focus,select:focus{outline:none;border-color:#0D4F2E}
+.btn{width:100%;padding:.85rem;border-radius:10px;border:none;background:#0D4F2E;color:#FFD700;font-size:1rem;font-weight:600;cursor:pointer;margin-bottom:.6rem}
+.score-row{display:grid;grid-template-columns:1fr 50px 14px 50px 1fr;align-items:center;gap:.4rem;margin-bottom:.75rem}
+.tname{font-size:.82rem;font-weight:600}
+.tname.home{text-align:right}
+.sin{width:100%;height:44px;border:1.5px solid #ddd;border-radius:8px;text-align:center;font-size:1.2rem;font-weight:700;padding:0;margin:0;-moz-appearance:textfield}
+.sin::-webkit-outer-spin-button,.sin::-webkit-inner-spin-button{-webkit-appearance:none}
+.vs{text-align:center;font-size:.8rem;color:#aaa}
+.card{background:#fff;border-radius:12px;padding:1rem;margin-bottom:.6rem;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.label{font-size:.75rem;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.4rem}
+.msg{padding:.65rem 1rem;border-radius:8px;font-size:.85rem;margin-bottom:.6rem;display:none}
+.msg.ok{background:#E8F5E9;color:#0D4F2E;display:block}
+.msg.err{background:#FEECEC;color:#c0392b;display:block}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Admin — Resultados</h1>
+  <a href="/">Voltar</a>
+</div>
+<div class="wrap">
+  <div class="card">
+    <div class="label">Senha de acesso</div>
+    <input type="password" id="senha" placeholder="Senha do administrador" />
+  </div>
+  <div class="card">
+    <div class="label">Selecione o jogo</div>
+    <select id="jogo-sel" onchange="selectGame()">
+      <option value="">-- escolha o jogo --</option>
+    </select>
+    <div id="score-area" style="display:none">
+      <div class="label" style="margin-top:.5rem">Resultado oficial</div>
+      <div class="score-row">
+        <div class="tname home" id="ta-label"></div>
+        <input class="sin" type="number" min="0" max="20" id="res-a" placeholder="-">
+        <div class="vs">x</div>
+        <input class="sin" type="number" min="0" max="20" id="res-b" placeholder="-">
+        <div class="tname" id="tb-label"></div>
+      </div>
+    </div>
+  </div>
+  <div class="msg" id="msg"></div>
+  <button class="btn" onclick="salvar()">Salvar resultado</button>
+  <button class="btn" style="background:#fff;color:#0D4F2E;border:1.5px solid #0D4F2E" onclick="location.href='ranking.html'">Ver ranking atualizado</button>
+</div>
+<script>
+let jogos = [];
+async function init() {
+  jogos = await fetch('/api/jogos').then(r=>r.json());
+  const sel = document.getElementById('jogo-sel');
+  let rd = 0;
+  jogos.forEach(g => {
+    if (g[1] !== rd) {
+      rd = g[1];
+      const og = document.createElement('optgroup');
+      og.label = 'Rodada ' + rd;
+      sel.appendChild(og);
+    }
+    const o = document.createElement('option');
+    o.value = g[0];
+    o.textContent = '#' + g[0] + ' ' + g[2] + ' ' + g[3] + ' | ' + g[4] + ' x ' + g[5];
+    sel.appendChild(o);
+  });
+}
+function selectGame() {
+  const id = parseInt(document.getElementById('jogo-sel').value);
+  const sa = document.getElementById('score-area');
+  if (!id) { sa.style.display='none'; return; }
+  const g = jogos.find(x=>x[0]===id);
+  document.getElementById('ta-label').textContent = g[4];
+  document.getElementById('tb-label').textContent = g[5];
+  document.getElementById('res-a').value = '';
+  document.getElementById('res-b').value = '';
+  sa.style.display = 'block';
+}
+async function salvar() {
+  const senha = document.getElementById('senha').value;
+  const jogo_id = parseInt(document.getElementById('jogo-sel').value);
+  const gols_a = document.getElementById('res-a').value;
+  const gols_b = document.getElementById('res-b').value;
+  const msg = document.getElementById('msg');
+  if (!senha) { msg.className='msg err'; msg.textContent='Informe a senha.'; return; }
+  if (!jogo_id) { msg.className='msg err'; msg.textContent='Selecione um jogo.'; return; }
+  if (gols_a===''||gols_b==='') { msg.className='msg err'; msg.textContent='Informe o placar.'; return; }
+  const res = await fetch('/api/resultado', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ senha, jogo_id, gols_a: parseInt(gols_a), gols_b: parseInt(gols_b) })
+  });
+  if (res.ok) { msg.className='msg ok'; msg.textContent='Resultado salvo! Ranking atualizado.'; }
+  else { msg.className='msg err'; msg.textContent='Senha incorreta.'; }
+}
+init();
+</script>
+</body>
+</html>
