@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Charla Copa 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--orange:#F45B00;--blue:#1B3AE8;--black:#0A0A0A;--white:#FFFFFF;--off-white:#FFF5EE;--orange-dark:#C84A00}
+body{font-family:'Inter',sans-serif;background:var(--orange);color:var(--black);min-height:100vh}
+.header{background:var(--white);padding:.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--orange)}
+.logo-text{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--orange);letter-spacing:.04em;line-height:1}
+.logo-text span{color:var(--blue)}
+.sb-logo{height:22px;object-fit:contain}
+.header a{color:var(--orange);font-size:.78rem;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.06em}
+.wrap{padding:1rem;max-width:480px;margin:0 auto}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--white);letter-spacing:.04em;text-shadow:2px 2px 0 var(--orange-dark);margin-bottom:1rem}
+.card{background:var(--white);border-radius:6px;padding:1rem;margin-bottom:.75rem}
+.label{font-size:.68rem;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem}
+input,select{width:100%;height:44px;border:2px solid #eee;border-radius:4px;padding:0 .85rem;font-size:.9rem;background:#fafafa;color:var(--black);margin-bottom:.6rem;font-family:'Inter',sans-serif}
+input:focus,select:focus{outline:none;border-color:var(--orange)}
+.tabs{display:flex;gap:.4rem;margin-bottom:1rem}
+.tab{flex:1;padding:.6rem;border-radius:4px;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.2);font-size:.72rem;font-weight:700;color:rgba(255,255,255,.7);cursor:pointer;text-transform:uppercase;letter-spacing:.04em;font-family:'Inter',sans-serif}
+.tab.on{background:var(--white);color:var(--orange);border-color:var(--white)}
+.sec{display:none}.sec.on{display:block}
+.btn{width:100%;padding:.9rem;border-radius:4px;border:none;cursor:pointer;font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;font-family:'Inter',sans-serif}
+.btn-orange{background:var(--orange);color:var(--white)}
+.btn-blue{background:var(--blue);color:var(--white)}
+.btn-outline{background:transparent;color:var(--white);border:2px solid rgba(255,255,255,.5)}
+.score-row{display:grid;grid-template-columns:1fr 52px 18px 52px 1fr;align-items:center;gap:.4rem;margin-bottom:.75rem}
+.tname{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--black)}
+.tname.home{text-align:right}
+.sin{width:100%;height:46px;border:2px solid #eee;border-radius:4px;text-align:center;font-size:1.4rem;font-weight:900;background:#fafafa;color:var(--black);padding:0;margin:0;-moz-appearance:textfield;font-family:'Bebas Neue',sans-serif}
+.sin::-webkit-outer-spin-button,.sin::-webkit-inner-spin-button{-webkit-appearance:none}
+.sin:focus{outline:none;border-color:var(--orange);background:var(--off-white)}
+.vs{text-align:center;font-size:.75rem;color:#ccc;font-weight:700}
+.msg{padding:.65rem 1rem;border-radius:4px;font-size:.82rem;margin-bottom:.6rem;display:none;font-weight:600}
+.msg.ok{background:#E8F5E9;color:#2E7D32;border:1.5px solid #A5D6A7;display:block}
+.msg.err{background:#FEECEC;color:#C62828;border:1.5px solid #FFCDD2;display:block}
+textarea{width:100%;border:2px solid #eee;border-radius:4px;padding:.75rem;font-size:.75rem;font-family:monospace;background:#fafafa;color:#666;resize:vertical;margin-bottom:.6rem}
+.info-box{background:rgba(0,0,0,.1);border-radius:4px;padding:.75rem 1rem;font-size:.78rem;color:rgba(255,255,255,.8);margin-bottom:.75rem;line-height:1.6;border-left:3px solid rgba(255,255,255,.4)}
+.sponsor-bar{background:var(--orange-dark);padding:.5rem 1rem;display:flex;align-items:center;justify-content:space-between;margin-top:1rem}
+.sponsor-bar span{font-size:.62rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <div class="logo-text">CHARLA <span>COPA</span></div>
+    <div style="font-size:.58rem;color:#aaa;text-transform:uppercase;letter-spacing:.08em">Admin</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:.75rem">
+    <a href="/">Voltar</a>
+    <img src="sportingbet-blue.png" class="sb-logo" alt="Sportingbet">
+  </div>
+</div>
+<div class="wrap">
+  <div class="page-title">Painel Admin</div>
+  <div class="card">
+    <div class="label">Senha de acesso</div>
+    <input type="password" id="senha" placeholder="Senha do administrador" />
+  </div>
+  <div class="tabs">
+    <button class="tab on" onclick="setTab('resultados')">Resultados</button>
+    <button class="tab" onclick="setTab('backup')">Backup</button>
+    <button class="tab" onclick="setTab('restore')">Restaurar</button>
+  </div>
+
+  <div class="sec on" id="sec-resultados">
+    <div class="card">
+      <div class="label">Selecione o jogo</div>
+      <select id="jogo-sel" onchange="selectGame()"><option value="">-- escolha o jogo --</option></select>
+      <div id="score-area" style="display:none">
+        <div class="label" style="margin-top:.5rem">Resultado oficial</div>
+        <div class="score-row">
+          <div class="tname home" id="ta-label"></div>
+          <input class="sin" type="number" min="0" max="20" id="res-a" placeholder="—">
+          <div class="vs">×</div>
+          <input class="sin" type="number" min="0" max="20" id="res-b" placeholder="—">
+          <div class="tname" id="tb-label"></div>
+        </div>
+      </div>
+    </div>
+    <div class="msg" id="msg-res"></div>
+    <button class="btn btn-orange" onclick="salvarResultado()">Salvar resultado</button>
+    <button class="btn btn-blue" onclick="location.href='ranking.html'">Ver ranking atualizado</button>
+  </div>
+
+  <div class="sec" id="sec-backup">
+    <div class="info-box">Baixe o backup regularmente para nao perder os palpites caso o servidor reinicie.</div>
+    <div class="msg" id="msg-bk"></div>
+    <button class="btn btn-orange" onclick="baixarBackup()">Baixar backup (JSON)</button>
+    <div id="backup-preview" style="display:none">
+      <div class="label" style="margin-top:.75rem">Preview</div>
+      <textarea id="backup-txt" rows="6" readonly></textarea>
+    </div>
+  </div>
+
+  <div class="sec" id="sec-restore">
+    <div class="info-box">Cole o conteudo de um backup anterior para restaurar os dados.</div>
+    <div class="label">JSON do backup</div>
+    <textarea id="restore-txt" rows="7" placeholder='{"exportado_em":"...","palpites":[...],"resultados":{}}'></textarea>
+    <div class="msg" id="msg-re"></div>
+    <button class="btn btn-orange" onclick="restaurar()">Restaurar dados</button>
+  </div>
+</div>
+<div class="sponsor-bar">
+  <span>Patrocinador oficial</span>
+  <img src="sportingbet-white.png" style="height:16px;object-fit:contain" alt="Sportingbet">
+</div>
+<script>
+let jogos=[];
+function setTab(t){
+  document.querySelectorAll('.tab').forEach((x,i)=>x.classList.toggle('on',['resultados','backup','restore'][i]===t));
+  document.querySelectorAll('.sec').forEach(x=>x.classList.remove('on'));
+  document.getElementById('sec-'+t).classList.add('on');
+}
+async function init(){
+  jogos=await fetch('/api/jogos').then(r=>r.json());
+  const sel=document.getElementById('jogo-sel');
+  let rd=0;
+  jogos.forEach(g=>{
+    if(g[1]!==rd){rd=g[1];const og=document.createElement('optgroup');og.label='Rodada '+rd;sel.appendChild(og);}
+    const o=document.createElement('option');o.value=g[0];o.textContent='#'+g[0]+' '+g[2]+' '+g[3]+' | '+g[4]+' x '+g[5];sel.appendChild(o);
+  });
+}
+function selectGame(){
+  const id=parseInt(document.getElementById('jogo-sel').value);
+  const sa=document.getElementById('score-area');
+  if(!id){sa.style.display='none';return;}
+  const g=jogos.find(x=>x[0]===id);
+  document.getElementById('ta-label').textContent=g[4];
+  document.getElementById('tb-label').textContent=g[5];
+  document.getElementById('res-a').value='';document.getElementById('res-b').value='';
+  sa.style.display='block';
+}
+function showMsg(id,type,txt){const el=document.getElementById(id);el.className='msg '+type;el.textContent=txt;}
+async function salvarResultado(){
+  const senha=document.getElementById('senha').value;
+  const jogo_id=parseInt(document.getElementById('jogo-sel').value);
+  const gols_a=document.getElementById('res-a').value;
+  const gols_b=document.getElementById('res-b').value;
+  if(!senha){showMsg('msg-res','err','Informe a senha.');return;}
+  if(!jogo_id){showMsg('msg-res','err','Selecione um jogo.');return;}
+  if(gols_a===''||gols_b===''){showMsg('msg-res','err','Informe o placar.');return;}
+  const res=await fetch('/api/resultado',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({senha,jogo_id,gols_a:parseInt(gols_a),gols_b:parseInt(gols_b)})});
+  if(res.ok)showMsg('msg-res','ok','Resultado salvo! Ranking atualizado.');
+  else showMsg('msg-res','err','Senha incorreta.');
+}
+async function baixarBackup(){
+  const senha=document.getElementById('senha').value;
+  if(!senha){showMsg('msg-bk','err','Informe a senha primeiro.');return;}
+  const res=await fetch('/api/backup?senha='+encodeURIComponent(senha));
+  if(!res.ok){showMsg('msg-bk','err','Senha incorreta.');return;}
+  const data=await res.json();
+  const json=JSON.stringify(data,null,2);
+  document.getElementById('backup-txt').value=json;
+  document.getElementById('backup-preview').style.display='block';
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='charla-copa-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  showMsg('msg-bk','ok','Backup com '+(data.palpites?data.palpites.length:0)+' palpites baixado!');
+}
+async function restaurar(){
+  const senha=document.getElementById('senha').value;
+  const txt=document.getElementById('restore-txt').value.trim();
+  if(!senha){showMsg('msg-re','err','Informe a senha primeiro.');return;}
+  if(!txt){showMsg('msg-re','err','Cole o JSON do backup.');return;}
+  let data;try{data=JSON.parse(txt);}catch(e){showMsg('msg-re','err','JSON invalido.');return;}
+  const res=await fetch('/api/restore',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({senha,data})});
+  if(res.ok){const r=await res.json();showMsg('msg-re','ok',r.palpites+' palpites restaurados!');}
+  else showMsg('msg-re','err','Senha incorreta.');
+}
+init();
+</script>
+</body>
+</html>
