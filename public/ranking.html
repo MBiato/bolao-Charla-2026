@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ranking — Charla Copa 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--blue:#1B3AE8;--orange:#F45B00;--black:#0A0A0A;--white:#FAFAFA;--yellow:#FFD600;--card:#141414;--border:#2a2a2a}
+body{font-family:'Inter',sans-serif;background:var(--black);color:var(--white);min-height:100vh}
+.header{background:var(--blue);padding:.85rem 1.25rem;display:flex;align-items:center;gap:.75rem;border-bottom:3px solid var(--orange)}
+.logo-text{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--white);letter-spacing:.04em;line-height:1;flex:1}
+.logo-text span{color:var(--yellow)}
+.header a{color:rgba(255,255,255,.6);font-size:.78rem;font-weight:600;text-decoration:none;text-transform:uppercase;letter-spacing:.06em}
+.wrap{padding:1rem;max-width:480px;margin:0 auto}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--white);letter-spacing:.04em;margin-bottom:.2rem}
+.page-sub{font-size:.72rem;color:#555;text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem}
+.rank-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.85rem 1rem;margin-bottom:.45rem;display:flex;align-items:center;gap:.75rem;position:relative;overflow:hidden}
+.rank-card.top1{border-color:var(--yellow);border-top:3px solid var(--yellow)}
+.rank-card.top2{border-color:#C0C0C0;border-top:3px solid #C0C0C0}
+.rank-card.top3{border-color:#CD7F32;border-top:3px solid #CD7F32}
+.pos{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#333;width:28px;text-align:center;flex-shrink:0;line-height:1}
+.rank-card.top1 .pos{color:var(--yellow)}
+.rank-card.top2 .pos{color:#C0C0C0}
+.rank-card.top3 .pos{color:#CD7F32}
+.av{width:38px;height:38px;border-radius:4px;background:#1e1e1e;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1rem;color:#555;flex-shrink:0;transform:rotate(-1deg)}
+.rank-card.top1 .av{background:var(--yellow);color:var(--black)}
+.rank-card.top2 .av{background:#C0C0C0;color:var(--black)}
+.rank-card.top3 .av{background:#CD7F32;color:var(--white)}
+.info{flex:1;min-width:0}
+.name{font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--white)}
+.detail{font-size:.7rem;color:#555;margin-top:2px}
+.mini-prog{height:3px;background:#1e1e1e;border-radius:2px;margin-top:.4rem;overflow:hidden}
+.mini-fill{height:3px;background:var(--orange);border-radius:2px}
+.pts-block{text-align:right;flex-shrink:0}
+.pts-num{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--orange);line-height:1}
+.pts-lbl{font-size:.65rem;color:#555;text-transform:uppercase;letter-spacing:.06em}
+.btn{width:100%;padding:.85rem;border-radius:4px;border:none;cursor:pointer;font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:.5rem}
+.btn-orange{background:var(--orange);color:var(--white)}
+.btn-outline{background:transparent;color:var(--white);border:1.5px solid var(--border)}
+.empty{text-align:center;padding:3rem 1rem;color:#444;font-size:.9rem}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#00e676;display:inline-block;margin-right:4px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.divider{height:1px;background:var(--border);margin:.75rem 0}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo-text">CHARLA <span>COPA</span></div>
+  <a href="/">Palpitar</a>
+</div>
+<div class="wrap">
+  <div class="page-title">Ranking</div>
+  <div class="page-sub"><span class="live-dot"></span>Atualiza a cada 30 segundos</div>
+  <div id="content"><div class="empty">Carregando...</div></div>
+  <button class="btn btn-orange" onclick="load()">Atualizar agora</button>
+  <button class="btn btn-outline" onclick="location.href='/'">Dar palpites</button>
+</div>
+<script>
+async function load(){
+  const [ranking,jogos]=await Promise.all([fetch('/api/ranking').then(r=>r.json()),fetch('/api/jogos').then(r=>r.json())]);
+  const total=jogos.length;
+  const el=document.getElementById('content');
+  if(!ranking.length){el.innerHTML='<div class="empty">Nenhum palpite ainda.</div>';return;}
+  const topClass=i=>i===0?'top1':i===1?'top2':i===2?'top3':'';
+  const medal=['🥇','🥈','🥉'];
+  el.innerHTML=ranking.map((r,i)=>{
+    const pct=Math.round(r.total/total*100);
+    return `<div class="rank-card ${topClass(i)}">
+      <div class="pos">${i+1}</div>
+      <div class="av">${r.nome.slice(0,2).toUpperCase()}</div>
+      <div class="info">
+        <div class="name">${r.nome} ${i<3?medal[i]:''}</div>
+        <div class="detail">${r.exatos} placar exato · ${r.vencedores} vencedor · ${r.total}/${total} palpites</div>
+        <div class="mini-prog"><div class="mini-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="pts-block">
+        <div class="pts-num">${r.pts}</div>
+        <div class="pts-lbl">pts</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+load();
+setInterval(load,30000);
+</script>
+</body>
+</html>

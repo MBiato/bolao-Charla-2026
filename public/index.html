@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charla Copa 2026 — Bolão</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1B3AE8;
+  --orange:#F45B00;
+  --black:#0A0A0A;
+  --white:#FAFAFA;
+  --yellow:#FFD600;
+  --card:#141414;
+  --border:#2a2a2a;
+}
+body{font-family:'Inter',sans-serif;background:var(--black);color:var(--white);min-height:100vh}
+
+/* HEADER */
+.header{background:var(--blue);padding:.85rem 1.25rem;display:flex;align-items:center;gap:.75rem;border-bottom:3px solid var(--orange);position:sticky;top:0;z-index:10}
+.logo-text{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--white);letter-spacing:.04em;line-height:1}
+.logo-text span{color:var(--yellow)}
+.header-sub{font-size:.72rem;color:rgba(255,255,255,.6);letter-spacing:.06em;text-transform:uppercase}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:.75rem}
+
+/* AVATAR */
+.avatar{width:36px;height:36px;border-radius:4px;background:var(--orange);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--white);letter-spacing:.04em;transform:rotate(-2deg);flex-shrink:0}
+
+/* SCREENS */
+.screen{display:none;padding:1rem;max-width:480px;margin:0 auto}
+.screen.on{display:block}
+
+/* HERO */
+.hero{text-align:center;padding:1.5rem 0 1rem;position:relative}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;line-height:.95;color:var(--white);letter-spacing:.02em}
+.hero-title span{color:var(--orange);display:block}
+.hero-sub{font-size:.8rem;color:rgba(255,255,255,.5);margin-top:.5rem;text-transform:uppercase;letter-spacing:.08em}
+.hero-badge{display:inline-block;background:var(--orange);color:var(--white);font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:2px;text-transform:uppercase;letter-spacing:.06em;margin-top:.5rem}
+
+/* PLAYER GRID */
+.section-label{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem}
+.player-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1rem}
+.player-btn{background:var(--card);border:1.5px solid var(--border);border-radius:6px;padding:.85rem .5rem;cursor:pointer;text-align:center;transition:all .15s;-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden}
+.player-btn::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--orange);transform:scaleX(0);transition:transform .15s}
+.player-btn:active{transform:scale(.96)}
+.player-btn.sel{border-color:var(--orange);background:#1a0a00}
+.player-btn.sel::before{transform:scaleX(1)}
+.player-btn .av{width:38px;height:38px;border-radius:4px;background:#1e1e1e;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1rem;color:rgba(255,255,255,.5);margin:0 auto .4rem;transition:all .15s}
+.player-btn.sel .av{background:var(--orange);color:var(--white)}
+.player-btn .pname{font-size:.78rem;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:.04em}
+.player-btn small{font-size:.65rem;color:var(--orange);display:block;margin-top:2px;font-weight:600}
+
+/* BUTTONS */
+.btn{width:100%;padding:.9rem;border-radius:4px;border:none;cursor:pointer;font-size:.95rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;transition:all .15s}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--orange);color:var(--white)}
+.btn-primary:disabled{background:#2a2a2a;color:#555;cursor:not-allowed;transform:none}
+.btn-secondary{background:transparent;color:var(--white);border:1.5px solid var(--border);margin-top:.5rem}
+.btn-blue{background:var(--blue);color:var(--white);margin-top:.5rem}
+
+/* ROUND TABS */
+.round-tabs{display:flex;gap:.4rem;margin-bottom:.85rem}
+.rtab{flex:1;padding:.55rem;border-radius:4px;border:1.5px solid var(--border);background:var(--card);font-size:.78rem;font-weight:700;color:#555;cursor:pointer;text-transform:uppercase;letter-spacing:.04em;transition:all .15s}
+.rtab.on{background:var(--blue);color:var(--white);border-color:var(--blue)}
+
+/* GAME CARDS */
+.game-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.85rem;margin-bottom:.5rem;position:relative;overflow:hidden}
+.game-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--border)}
+.game-card.filled::before{background:var(--orange)}
+.game-meta{font-size:.68rem;color:#555;margin-bottom:.6rem;text-align:center;text-transform:uppercase;letter-spacing:.06em}
+.game-row{display:grid;grid-template-columns:1fr 52px 18px 52px 1fr;align-items:center;gap:.4rem}
+.tname{font-size:.78rem;font-weight:700;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase;letter-spacing:.03em}
+.tname.home{text-align:right}
+.sin{width:100%;height:44px;border:1.5px solid var(--border);border-radius:4px;text-align:center;font-size:1.3rem;font-weight:900;background:#1a1a1a;color:var(--white);-moz-appearance:textfield;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em}
+.sin::-webkit-outer-spin-button,.sin::-webkit-inner-spin-button{-webkit-appearance:none}
+.sin:focus{outline:none;border-color:var(--orange);background:#1a0800}
+.sin.ok{border-color:var(--orange);background:#1a0800;color:var(--orange)}
+.vs{text-align:center;font-size:.7rem;color:#444;font-weight:700}
+
+/* PROGRESS */
+.progress-wrap{background:#1a1a1a;border-radius:2px;height:4px;margin-bottom:.3rem}
+.progress-fill{background:var(--orange);border-radius:2px;height:4px;transition:width .4s}
+.progress-label{font-size:.7rem;color:#555;margin-bottom:.85rem;text-transform:uppercase;letter-spacing:.06em}
+
+/* DONE */
+.done-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:2rem 1.25rem;text-align:center;margin-bottom:1rem;border-top:3px solid var(--orange)}
+.done-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--white);margin:.75rem 0 .4rem;letter-spacing:.04em}
+.done-sub{font-size:.82rem;color:#666;line-height:1.5}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--orange);color:var(--white);padding:.55rem 1.25rem;border-radius:3px;font-size:.8rem;font-weight:700;z-index:999;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;text-transform:uppercase;letter-spacing:.06em}
+.toast.show{opacity:1}
+
+/* STARS DECO */
+.star{position:absolute;color:var(--yellow);font-size:.9rem;opacity:.15;pointer-events:none}
+</style>
+</head>
+<body>
+
+<div class="header" id="header" style="display:none">
+  <div>
+    <div class="logo-text">CHARLA <span>COPA</span></div>
+  </div>
+  <div class="header-right">
+    <div style="text-align:right">
+      <div style="font-size:.7rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em" id="hdr-sub"></div>
+    </div>
+    <div class="avatar" id="hdr-av"></div>
+  </div>
+</div>
+
+<!-- TELA 1: ESCOLHA -->
+<div class="screen on" id="s-pick">
+  <div class="hero">
+    <div class="hero-title">CHARLA<span>COPA</span></div>
+    <div class="hero-sub">Bolão Copa do Mundo 2026</div>
+    <div class="hero-badge">⚽ Quem vai ser o campeão?</div>
+  </div>
+  <div class="section-label">Selecione seu nome</div>
+  <div class="player-grid" id="player-grid"></div>
+  <button class="btn btn-primary" id="btn-start" disabled onclick="goToGames()">Entrar e palpitar</button>
+  <button class="btn btn-blue" onclick="location.href='ranking.html'">Ver ranking ao vivo</button>
+</div>
+
+<!-- TELA 2: PALPITES -->
+<div class="screen" id="s-games">
+  <div class="progress-wrap"><div class="progress-fill" id="prog"></div></div>
+  <div class="progress-label" id="prog-label"></div>
+  <div class="round-tabs">
+    <button class="rtab on" onclick="setRound(1,this)">Rodada 1</button>
+    <button class="rtab" onclick="setRound(2,this)">Rodada 2</button>
+    <button class="rtab" onclick="setRound(3,this)">Rodada 3</button>
+  </div>
+  <div id="games-list"></div>
+  <button class="btn btn-secondary" onclick="goBack()">Trocar participante</button>
+</div>
+
+<!-- TELA 3: DONE -->
+<div class="screen" id="s-done">
+  <div class="done-box">
+    <div style="font-size:2.5rem">🏆</div>
+    <div class="done-title" id="done-name"></div>
+    <div class="done-sub" id="done-msg"></div>
+  </div>
+  <button class="btn btn-primary" onclick="goBack()">Outro participante</button>
+  <button class="btn btn-blue" onclick="location.href='ranking.html'">Ver ranking</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let jogos=[],nomes=[],currentPlayer=null,currentRound=1,palpites={};
+
+async function init(){
+  [jogos,nomes]=await Promise.all([fetch('/api/jogos').then(r=>r.json()),fetch('/api/nomes').then(r=>r.json())]);
+  buildGrid();
+}
+
+function buildGrid(){
+  const g=document.getElementById('player-grid');
+  nomes.forEach(n=>{
+    const d=document.createElement('div');
+    d.className='player-btn';d.id='pb-'+n;d.onclick=()=>selectPlayer(n);
+    d.innerHTML=`<div class="av">${n.slice(0,2).toUpperCase()}</div><div class="pname">${n}</div><small id="ps-${n}"></small>`;
+    g.appendChild(d);
+  });
+  updateCounts();
+}
+
+async function updateCounts(){
+  for(const n of nomes){
+    const data=await fetch('/api/palpites/'+encodeURIComponent(n)).then(r=>r.json());
+    const c=Object.keys(data).length;
+    const el=document.getElementById('ps-'+n);
+    if(el)el.textContent=c>0?c+' palpites':'';
+  }
+}
+
+function selectPlayer(n){
+  document.querySelectorAll('.player-btn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('pb-'+n).classList.add('sel');
+  currentPlayer=n;
+  const btn=document.getElementById('btn-start');
+  btn.disabled=false;btn.textContent='Entrar como '+n.toUpperCase();
+}
+
+async function goToGames(){
+  if(!currentPlayer)return;
+  palpites=await fetch('/api/palpites/'+encodeURIComponent(currentPlayer)).then(r=>r.json());
+  document.getElementById('header').style.display='flex';
+  document.getElementById('hdr-av').textContent=currentPlayer.slice(0,2).toUpperCase();
+  setRound(1,document.querySelector('.rtab'));
+  show('s-games');updateProgress();
+}
+
+function setRound(r,btn){
+  currentRound=r;
+  document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');renderGames();
+}
+
+function renderGames(){
+  const list=document.getElementById('games-list');
+  list.innerHTML=jogos.filter(g=>g[1]===currentRound).map(g=>{
+    const id=g[0],p=palpites[id];
+    const va=p!==undefined?p[0]:'',vb=p!==undefined?p[1]:'';
+    const filled=va!==''&&vb!==''?'filled':'';
+    return `<div class="game-card ${filled}" id="gc-${id}">
+      <div class="game-meta">${g[2]} · ${g[3]}</div>
+      <div class="game-row">
+        <div class="tname home">${g[4]}</div>
+        <input class="sin ${va!==''?'ok':''}" type="number" min="0" max="20" id="ga-${id}" value="${va}" placeholder="—" oninput="onInput(${id})">
+        <div class="vs">×</div>
+        <input class="sin ${vb!==''?'ok':''}" type="number" min="0" max="20" id="gb-${id}" value="${vb}" placeholder="—" oninput="onInput(${id})">
+        <div class="tname">${g[5]}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function onInput(id){
+  const a=document.getElementById('ga-'+id),b=document.getElementById('gb-'+id);
+  a.classList.toggle('ok',a.value!=='');b.classList.toggle('ok',b.value!=='');
+  const card=document.getElementById('gc-'+id);
+  if(a.value!==''&&b.value!==''){
+    const ga=parseInt(a.value),gb=parseInt(b.value);
+    palpites[id]=[ga,gb];
+    card.classList.add('filled');
+    await fetch('/api/palpites',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({nome:currentPlayer,jogo_id:id,gols_a:ga,gols_b:gb})});
+    updateProgress();showToast('✓ Salvo');
+  } else { card.classList.remove('filled'); }
+}
+
+function updateProgress(){
+  const total=jogos.length,done=Object.keys(palpites).length,pct=Math.round(done/total*100);
+  document.getElementById('prog').style.width=pct+'%';
+  document.getElementById('prog-label').textContent=done+' de '+total+' jogos — '+pct+'% completo';
+  document.getElementById('hdr-sub').textContent=done+'/'+total;
+}
+
+function goBack(){
+  currentPlayer=null;
+  document.getElementById('header').style.display='none';
+  document.querySelectorAll('.player-btn').forEach(b=>b.classList.remove('sel'));
+  const btn=document.getElementById('btn-start');btn.disabled=true;btn.textContent='Entrar e palpitar';
+  updateCounts();show('s-pick');
+}
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),1200);}
+
+init();
+</script>
+</body>
+</html>
