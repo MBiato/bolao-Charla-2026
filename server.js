@@ -1,29 +1,14 @@
 const express = require('express');
-const Database = require('better-sqlite3');
 const path = require('path');
 const app = express();
 
 app.use(express.json());
 app.use(express.static('public'));
 
-const db = new Database('.data/bolao.db');
-
-db.exec(`
-  CREATE TABLE IF NOT EXISTS palpites (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome TEXT NOT NULL,
-    jogo_id INTEGER NOT NULL,
-    gols_a INTEGER,
-    gols_b INTEGER,
-    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(nome, jogo_id)
-  );
-  CREATE TABLE IF NOT EXISTS resultados (
-    jogo_id INTEGER PRIMARY KEY,
-    gols_a INTEGER,
-    gols_b INTEGER
-  );
-`);
+// Banco de dados em memória (persiste enquanto o app estiver rodando)
+// Exportação via /api/backup garante que você não perde dados
+let palpites = {}; // { "nome:jogo_id": { nome, jogo_id, gols_a, gols_b } }
+let resultados = {}; // { jogo_id: { gols_a, gols_b } }
 
 const JOGOS = [
   [1,1,"11/06","16h","Mexico","Africa do Sul"],
@@ -102,69 +87,72 @@ const JOGOS = [
 
 const NOMES = ['Cantarelli','Betao','Enzo','Matheus','Covarde','Machado','Azevedo','Phill','Blu'];
 
-// ── API ──────────────────────────────────────────────────────────────────────
-
 app.get('/api/jogos', (req, res) => res.json(JOGOS));
 app.get('/api/nomes', (req, res) => res.json(NOMES));
 
 app.get('/api/palpites/:nome', (req, res) => {
-  const rows = db.prepare('SELECT jogo_id, gols_a, gols_b FROM palpites WHERE nome = ?').all(req.params.nome);
+  const nome = req.params.nome;
   const map = {};
-  rows.forEach(r => { map[r.jogo_id] = [r.gols_a, r.gols_b]; });
+  Object.values(palpites).filter(p => p.nome === nome).forEach(p => {
+    map[p.jogo_id] = [p.gols_a, p.gols_b];
+  });
   res.json(map);
 });
 
 app.post('/api/palpites', (req, res) => {
   const { nome, jogo_id, gols_a, gols_b } = req.body;
   if (!NOMES.includes(nome)) return res.status(400).json({ error: 'Nome invalido' });
-  db.prepare(`
-    INSERT INTO palpites (nome, jogo_id, gols_a, gols_b)
-    VALUES (?, ?, ?, ?)
-    ON CONFLICT(nome, jogo_id) DO UPDATE SET gols_a=excluded.gols_a, gols_b=excluded.gols_b
-  `).run(nome, jogo_id, gols_a, gols_b);
+  palpites[`${nome}:${jogo_id}`] = { nome, jogo_id, gols_a, gols_b };
   res.json({ ok: true });
 });
 
-// Admin: lançar resultado oficial
 app.post('/api/resultado', (req, res) => {
   const { senha, jogo_id, gols_a, gols_b } = req.body;
   if (senha !== 'admin2026') return res.status(401).json({ error: 'Senha incorreta' });
-  db.prepare(`
-    INSERT INTO resultados (jogo_id, gols_a, gols_b)
-    VALUES (?, ?, ?)
-    ON CONFLICT(jogo_id) DO UPDATE SET gols_a=excluded.gols_a, gols_b=excluded.gols_b
-  `).run(jogo_id, gols_a, gols_b);
+  resultados[jogo_id] = { gols_a, gols_b };
   res.json({ ok: true });
 });
 
-// Ranking calculado
 app.get('/api/ranking', (req, res) => {
-  const resultados = db.prepare('SELECT * FROM resultados').all();
-  const resMap = {};
-  resultados.forEach(r => { resMap[r.jogo_id] = r; });
-
   const ranking = NOMES.map(nome => {
-    const palpites = db.prepare('SELECT * FROM palpites WHERE nome = ?').all(nome);
-    let pts = 0, exatos = 0, vencedores = 0, total = palpites.length;
-    palpites.forEach(p => {
-      const res = resMap[p.jogo_id];
+    const meusPalpites = Object.values(palpites).filter(p => p.nome === nome);
+    let pts = 0, exatos = 0, vencedores = 0;
+    meusPalpites.forEach(p => {
+      const res = resultados[p.jogo_id];
       if (!res) return;
-      const palvenc = p.gols_a > p.gols_b ? 'A' : p.gols_a < p.gols_b ? 'B' : 'E';
-      const resvenc = res.gols_a > res.gols_b ? 'A' : res.gols_a < res.gols_b ? 'B' : 'E';
+      const pv = p.gols_a > p.gols_b ? 'A' : p.gols_a < p.gols_b ? 'B' : 'E';
+      const rv = res.gols_a > res.gols_b ? 'A' : res.gols_a < res.gols_b ? 'B' : 'E';
       if (p.gols_a === res.gols_a && p.gols_b === res.gols_b) { pts += 3; exatos++; }
-      else if (palvenc === resvenc) { pts += 1; vencedores++; }
+      else if (pv === rv) { pts += 1; vencedores++; }
     });
-    return { nome, pts, exatos, vencedores, total };
+    return { nome, pts, exatos, vencedores, total: meusPalpites.length };
   });
-
   ranking.sort((a, b) => b.pts - a.pts || b.exatos - a.exatos);
   res.json(ranking);
 });
 
-// Todos os palpites (admin)
-app.get('/api/admin/palpites', (req, res) => {
-  const rows = db.prepare('SELECT * FROM palpites ORDER BY nome, jogo_id').all();
-  res.json(rows);
+// Backup completo — baixe periodicamente para não perder dados
+app.get('/api/backup', (req, res) => {
+  const { senha } = req.query;
+  if (senha !== 'admin2026') return res.status(401).json({ error: 'Senha incorreta' });
+  res.json({
+    exportado_em: new Date().toISOString(),
+    palpites: Object.values(palpites),
+    resultados
+  });
 });
 
-app.listen(3000, () => console.log('Bolao rodando na porta 3000'));
+// Restaurar backup
+app.post('/api/restore', (req, res) => {
+  const { senha, data } = req.body;
+  if (senha !== 'admin2026') return res.status(401).json({ error: 'Senha incorreta' });
+  if (data.palpites) {
+    palpites = {};
+    data.palpites.forEach(p => { palpites[`${p.nome}:${p.jogo_id}`] = p; });
+  }
+  if (data.resultados) resultados = data.resultados;
+  res.json({ ok: true, palpites: Object.keys(palpites).length });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log('Bolao rodando na porta ' + PORT));
