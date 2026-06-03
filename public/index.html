@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charla Copa 2026 — Bolão</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0F1E5C;
+  --navy-deep:#091244;
+  --navy-mid:#1A2E7A;
+  --terra:#C4510A;
+  --terra-dark:#A84408;
+  --gold:#D4A000;
+  --cream:#F0EAE0;
+  --cream2:#F5F0EA;
+  --blue-mid:#9FA8C9;
+}
+body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--cream);min-height:100vh}
+.header{background:var(--cream2);padding:.7rem 1.1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--terra);position:sticky;top:0;z-index:10}
+.charla-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--navy);letter-spacing:.04em;line-height:1}
+.charla-logo span{color:var(--terra)}
+.sb-logo{height:20px;object-fit:contain}
+.header-right{display:flex;align-items:center;gap:.6rem}
+.hdr-info{font-size:.68rem;color:#888;text-align:right;font-weight:600}
+.avatar{width:32px;height:32px;border-radius:3px;background:var(--terra);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:.9rem;color:var(--cream2);flex-shrink:0}
+.screen{display:none}
+.screen.on{display:block}
+.hero-wrap{background:var(--navy);padding:1.25rem 1.1rem .75rem;text-align:center;position:relative;overflow:hidden}
+.hero-bg{font-family:'Bebas Neue',sans-serif;font-size:min(22vw,110px);color:rgba(255,255,255,.025);position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);white-space:nowrap;letter-spacing:.02em;line-height:1;pointer-events:none;user-select:none}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.8rem,14vw,4rem);line-height:.9;color:var(--cream);letter-spacing:.02em;position:relative;z-index:1}
+.hero-title span{color:var(--terra);display:block}
+.hero-badge{display:inline-block;background:var(--terra);color:var(--cream2);font-size:.7rem;font-weight:700;padding:3px 12px;border-radius:2px;text-transform:uppercase;letter-spacing:.06em;margin-top:.5rem;position:relative;z-index:1}
+.body-wrap{padding:1rem 1.1rem;max-width:480px;margin:0 auto}
+.sec-label{font-size:.68rem;font-weight:700;color:rgba(240,234,224,.4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem}
+.player-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem;margin-bottom:.85rem}
+.player-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:.8rem .4rem;cursor:pointer;text-align:center;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.player-btn:active{transform:scale(.96)}
+.player-btn.sel{background:var(--terra);border-color:var(--terra)}
+.player-btn .av{width:36px;height:36px;border-radius:3px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:.9rem;color:rgba(240,234,224,.5);margin:0 auto .35rem;transition:all .15s}
+.player-btn.sel .av{background:rgba(255,255,255,.2);color:var(--cream2)}
+.player-btn .pname{font-size:.72rem;font-weight:700;color:rgba(240,234,224,.6);text-transform:uppercase;letter-spacing:.04em;transition:all .15s}
+.player-btn.sel .pname{color:var(--cream2)}
+.player-btn small{font-size:.6rem;color:rgba(240,234,224,.3);display:block;margin-top:1px}
+.player-btn.sel small{color:rgba(255,255,255,.7)}
+.btn{width:100%;padding:.88rem;border-radius:4px;border:none;cursor:pointer;font-size:.88rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;transition:all .15s;font-family:'Inter',sans-serif}
+.btn:active{transform:scale(.98)}
+.btn-cream{background:var(--cream2);color:var(--navy)}
+.btn-cream:disabled{background:rgba(255,255,255,.1);color:rgba(255,255,255,.2);cursor:not-allowed;transform:none}
+.btn-terra{background:var(--terra);color:var(--cream2);margin-top:.45rem}
+.btn-glass{background:rgba(255,255,255,.07);color:var(--cream);border:1px solid rgba(255,255,255,.12);margin-top:.45rem}
+.round-tabs{display:flex;gap:.4rem;margin-bottom:.8rem}
+.rtab{flex:1;padding:.52rem;border-radius:4px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);font-size:.75rem;font-weight:700;color:rgba(240,234,224,.4);cursor:pointer;text-transform:uppercase;letter-spacing:.04em;transition:all .15s}
+.rtab.on{background:var(--terra);color:var(--cream2);border-color:var(--terra)}
+.game-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:.8rem;margin-bottom:.45rem;transition:border-color .2s}
+.game-card.filled{border-color:var(--terra)}
+.game-card.filled::after{content:'✓';float:right;font-size:.65rem;color:var(--terra);font-weight:700;margin-top:-1px}
+.game-meta{font-size:.65rem;color:rgba(240,234,224,.3);margin-bottom:.55rem;text-align:center;text-transform:uppercase;letter-spacing:.06em}
+.game-row{display:grid;grid-template-columns:1fr 50px 16px 50px 1fr;align-items:center;gap:.35rem}
+.tname{font-size:.72rem;font-weight:700;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase;letter-spacing:.03em}
+.tname.home{text-align:right}
+.sin{width:100%;height:42px;border:1px solid rgba(255,255,255,.15);border-radius:4px;text-align:center;font-size:1.25rem;font-weight:900;background:rgba(255,255,255,.07);color:var(--cream);-moz-appearance:textfield;font-family:'Bebas Neue',sans-serif;transition:all .15s}
+.sin::-webkit-outer-spin-button,.sin::-webkit-inner-spin-button{-webkit-appearance:none}
+.sin:focus{outline:none;border-color:var(--terra);background:rgba(196,81,10,.15)}
+.sin.ok{border-color:var(--terra);background:rgba(196,81,10,.18);color:var(--terra)}
+.vs{text-align:center;font-size:.68rem;color:rgba(255,255,255,.2);font-weight:700}
+.progress-wrap{background:rgba(255,255,255,.1);border-radius:2px;height:4px;margin-bottom:.25rem}
+.progress-fill{background:var(--terra);border-radius:2px;height:4px;transition:width .4s}
+.progress-label{font-size:.65rem;color:rgba(240,234,224,.35);margin-bottom:.8rem;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.done-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:2rem 1.25rem;text-align:center;margin-bottom:1rem;border-top:3px solid var(--terra)}
+.done-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--cream);margin:.75rem 0 .4rem;letter-spacing:.04em}
+.done-sub{font-size:.8rem;color:rgba(240,234,224,.4);line-height:1.5}
+.sponsor-bar{background:var(--navy-deep);padding:.55rem 1.1rem;display:flex;align-items:center;justify-content:space-between}
+.sponsor-bar span{font-size:.62rem;color:rgba(240,234,224,.35);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--terra);color:var(--cream2);padding:.5rem 1.25rem;border-radius:3px;font-size:.78rem;font-weight:700;z-index:999;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;text-transform:uppercase;letter-spacing:.06em}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="header" id="header" style="display:none">
+  <div><div class="charla-logo">CHARLA <span>COPA</span></div></div>
+  <div class="header-right">
+    <div class="hdr-info" id="hdr-sub"></div>
+    <div class="avatar" id="hdr-av"></div>
+  </div>
+</div>
+<div class="screen on" id="s-pick">
+  <div style="background:var(--cream2);padding:.7rem 1.1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--terra)">
+    <div class="charla-logo">CHARLA <span>COPA</span></div>
+    <img src="sportingbet-blue.png" style="height:20px;object-fit:contain" alt="Sportingbet">
+  </div>
+  <div class="hero-wrap">
+    <div class="hero-bg">CHARLA COPA</div>
+    <div class="hero-title">CHARLA<span>COPA</span></div>
+    <div class="hero-badge">Bolão Copa do Mundo 2026</div>
+  </div>
+  <div class="body-wrap">
+    <div class="sec-label">Selecione seu nome</div>
+    <div class="player-grid" id="player-grid"></div>
+    <button class="btn btn-cream" id="btn-start" disabled onclick="goToGames()">Entrar e palpitar</button>
+    <button class="btn btn-terra" onclick="location.href='ranking.html'">Ver ranking ao vivo</button>
+    <button class="btn btn-glass" onclick="location.href='resultados.html'">Ver resultados</button>
+    <div style="margin-top:1rem;padding:.6rem 1rem;background:rgba(0,0,0,.15);border-radius:4px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:.62rem;color:rgba(240,234,224,.4);text-transform:uppercase;letter-spacing:.06em;font-weight:600">Patrocinador oficial</span>
+      <img src="sportingbet-white.png" style="height:16px;object-fit:contain" alt="Sportingbet">
+    </div>
+  </div>
+</div>
+<div class="screen" id="s-games">
+  <div class="body-wrap">
+    <div class="progress-wrap"><div class="progress-fill" id="prog"></div></div>
+    <div class="progress-label" id="prog-label"></div>
+    <div class="round-tabs">
+      <button class="rtab on" onclick="setRound(1,this)">Rodada 1</button>
+      <button class="rtab" onclick="setRound(2,this)">Rodada 2</button>
+      <button class="rtab" onclick="setRound(3,this)">Rodada 3</button>
+    </div>
+    <div id="games-list"></div>
+    <button class="btn btn-glass" onclick="goBack()">Trocar participante</button>
+  </div>
+  <div class="sponsor-bar">
+    <span>Patrocinador oficial</span>
+    <img src="sportingbet-white.png" style="height:16px;object-fit:contain" alt="Sportingbet">
+  </div>
+</div>
+<div class="screen" id="s-done">
+  <div class="body-wrap">
+    <div class="done-box">
+      <div style="font-size:2.5rem">🏆</div>
+      <div class="done-title" id="done-name"></div>
+      <div class="done-sub" id="done-msg"></div>
+    </div>
+    <button class="btn btn-cream" onclick="goBack()">Outro participante</button>
+    <button class="btn btn-terra" onclick="location.href='ranking.html'">Ver ranking</button>
+  </div>
+  <div class="sponsor-bar">
+    <span>Patrocinador oficial</span>
+    <img src="sportingbet-white.png" style="height:16px;object-fit:contain" alt="Sportingbet">
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+let jogos=[],nomes=[],currentPlayer=null,currentRound=1,palpites={};
+async function init(){
+  [jogos,nomes]=await Promise.all([fetch('/api/jogos').then(r=>r.json()),fetch('/api/nomes').then(r=>r.json())]);
+  buildGrid();
+}
+function buildGrid(){
+  const g=document.getElementById('player-grid');
+  nomes.forEach(n=>{
+    const d=document.createElement('div');
+    d.className='player-btn';d.id='pb-'+n;d.onclick=()=>selectPlayer(n);
+    d.innerHTML=`<div class="av">${n.slice(0,2).toUpperCase()}</div><div class="pname">${n}</div><small id="ps-${n}"></small>`;
+    g.appendChild(d);
+  });
+  updateCounts();
+}
+async function updateCounts(){
+  for(const n of nomes){
+    const data=await fetch('/api/palpites/'+encodeURIComponent(n)).then(r=>r.json());
+    const c=Object.keys(data).length;
+    const el=document.getElementById('ps-'+n);
+    if(el)el.textContent=c>0?c+' palpites':'';
+  }
+}
+function selectPlayer(n){
+  document.querySelectorAll('.player-btn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('pb-'+n).classList.add('sel');
+  currentPlayer=n;
+  const btn=document.getElementById('btn-start');
+  btn.disabled=false;btn.textContent='Entrar como '+n.toUpperCase();
+}
+async function goToGames(){
+  if(!currentPlayer)return;
+  palpites=await fetch('/api/palpites/'+encodeURIComponent(currentPlayer)).then(r=>r.json());
+  document.getElementById('header').style.display='flex';
+  document.getElementById('hdr-av').textContent=currentPlayer.slice(0,2).toUpperCase();
+  setRound(1,document.querySelector('.rtab'));
+  show('s-games');updateProgress();
+}
+function setRound(r,btn){
+  currentRound=r;
+  document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');renderGames();
+}
+function renderGames(){
+  const list=document.getElementById('games-list');
+  list.innerHTML=jogos.filter(g=>g[1]===currentRound).map(g=>{
+    const id=g[0],p=palpites[id];
+    const va=p!==undefined?p[0]:'',vb=p!==undefined?p[1]:'';
+    return `<div class="game-card ${va!==''&&vb!==''?'filled':''}" id="gc-${id}">
+      <div class="game-meta">${g[2]} · ${g[3]}</div>
+      <div class="game-row">
+        <div class="tname home">${g[4]}</div>
+        <input class="sin ${va!==''?'ok':''}" type="number" min="0" max="20" id="ga-${id}" value="${va}" placeholder="—" oninput="onInput(${id})">
+        <div class="vs">×</div>
+        <input class="sin ${vb!==''?'ok':''}" type="number" min="0" max="20" id="gb-${id}" value="${vb}" placeholder="—" oninput="onInput(${id})">
+        <div class="tname">${g[5]}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function onInput(id){
+  const a=document.getElementById('ga-'+id),b=document.getElementById('gb-'+id);
+  a.classList.toggle('ok',a.value!=='');b.classList.toggle('ok',b.value!=='');
+  const card=document.getElementById('gc-'+id);
+  if(a.value!==''&&b.value!==''){
+    const ga=parseInt(a.value),gb=parseInt(b.value);
+    palpites[id]=[ga,gb];card.classList.add('filled');
+    await fetch('/api/palpites',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome:currentPlayer,jogo_id:id,gols_a:ga,gols_b:gb})});
+    updateProgress();showToast('✓ Salvo');
+  } else card.classList.remove('filled');
+}
+function updateProgress(){
+  const total=jogos.length,done=Object.keys(palpites).length,pct=Math.round(done/total*100);
+  document.getElementById('prog').style.width=pct+'%';
+  document.getElementById('prog-label').textContent=done+' de '+total+' jogos — '+pct+'%';
+  document.getElementById('hdr-sub').textContent=done+'/'+total+' palpites';
+}
+function goBack(){
+  currentPlayer=null;document.getElementById('header').style.display='none';
+  document.querySelectorAll('.player-btn').forEach(b=>b.classList.remove('sel'));
+  const btn=document.getElementById('btn-start');btn.disabled=true;btn.textContent='Entrar e palpitar';
+  updateCounts();show('s-pick');
+}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),1200);}
+init();
+</script>
+</body>
+</html>

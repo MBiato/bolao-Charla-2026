@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resultados — Charla Copa 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0F1E5C;--navy-deep:#091244;--terra:#C4510A;--gold:#D4A000;--cream:#F0EAE0;--cream2:#F5F0EA}
+body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--cream);min-height:100vh}
+.header{background:var(--cream2);padding:.7rem 1.1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--terra)}
+.charla-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--navy);letter-spacing:.04em;line-height:1}
+.charla-logo span{color:var(--terra)}
+.sb-logo{height:20px;object-fit:contain}
+.nav-links{display:flex;align-items:center;gap:.75rem}
+.nav-links a{color:var(--terra);font-size:.78rem;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.06em}
+.wrap{padding:1rem 1.1rem;max-width:480px;margin:0 auto}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--cream);letter-spacing:.04em;margin-bottom:1rem}
+.day-label{font-size:.68rem;font-weight:700;color:rgba(240,234,224,.35);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem}
+.day-select{width:100%;height:46px;border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:0 .85rem;font-size:.95rem;background:rgba(255,255,255,.08);color:var(--cream);font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;margin-bottom:1rem}
+.day-select:focus{outline:none;border-color:var(--terra)}
+.day-select option{background:#0F1E5C;color:var(--cream)}
+.game-block{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;margin-bottom:.75rem;overflow:hidden}
+.game-header{padding:.7rem 1rem;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between}
+.game-title{font-size:.82rem;font-weight:700;color:var(--cream);text-transform:uppercase;letter-spacing:.03em}
+.game-meta{font-size:.68rem;color:rgba(240,234,224,.35);display:flex;align-items:center;gap:.4rem}
+.r-badge{background:rgba(255,255,255,.08);border-radius:2px;padding:1px 6px;font-size:.62rem;font-weight:700;color:rgba(240,234,224,.5);text-transform:uppercase}
+.game-score{display:grid;grid-template-columns:1fr 70px 1fr;align-items:center;gap:.5rem;padding:.9rem 1rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.team-name{font-size:.78rem;font-weight:700;color:var(--cream);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.team-name.home{text-align:right}
+.score-center{text-align:center}
+.score-num{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--terra);letter-spacing:.04em;line-height:1}
+.score-lbl{font-size:.58rem;color:rgba(240,234,224,.3);text-transform:uppercase;letter-spacing:.06em;margin-top:1px}
+.score-pending{font-size:.75rem;color:rgba(240,234,224,.25);font-style:italic}
+.twoup-banner{background:rgba(212,160,0,.08);border-bottom:1px solid rgba(212,160,0,.18);padding:.5rem 1rem;display:flex;align-items:center;gap:.5rem}
+.twoup-banner-text{font-size:.72rem;color:rgba(212,160,0,.8);font-weight:600}
+.twoup-badge{display:inline-flex;align-items:center;background:var(--gold);color:#412402;font-size:.58rem;font-weight:700;padding:1px 5px;border-radius:2px;text-transform:uppercase;letter-spacing:.04em;margin-left:4px}
+.palpites-hdr{padding:.45rem 1rem;background:rgba(0,0,0,.12);font-size:.62rem;font-weight:700;color:rgba(240,234,224,.3);text-transform:uppercase;letter-spacing:.08em}
+.palpite-row{display:flex;align-items:center;padding:.52rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);gap:.6rem}
+.palpite-row:last-child{border-bottom:none}
+.pal-av{width:28px;height:28px;border-radius:3px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:.8rem;color:rgba(240,234,224,.4);flex-shrink:0}
+.pal-info{flex:1;display:flex;align-items:center;gap:.4rem;min-width:0}
+.pal-nome{font-size:.78rem;font-weight:600;color:var(--cream)}
+.pal-placar{font-family:'Bebas Neue',sans-serif;font-size:1rem;color:rgba(240,234,224,.4);letter-spacing:.04em;margin-left:auto;flex-shrink:0}
+.pal-pts{width:30px;height:24px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;flex-shrink:0}
+.pts-exato{background:rgba(99,153,34,.2);color:#97C459}
+.pts-venc{background:rgba(55,138,221,.2);color:#85B7EB}
+.pts-twoup{background:rgba(212,160,0,.2);color:var(--gold)}
+.pts-erro{background:rgba(255,255,255,.05);color:rgba(240,234,224,.25)}
+.pts-pend{background:rgba(255,255,255,.05);color:rgba(240,234,224,.2)}
+.no-result-note{padding:.65rem 1rem;font-size:.72rem;color:rgba(240,234,224,.25);text-align:center;font-style:italic}
+.empty{text-align:center;padding:3rem 1rem;color:rgba(240,234,224,.3)}
+.btn{width:100%;padding:.85rem;border-radius:4px;border:none;cursor:pointer;font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:.45rem;font-family:'Inter',sans-serif}
+.btn-glass{background:rgba(255,255,255,.07);color:var(--cream);border:1px solid rgba(255,255,255,.12)}
+.sponsor-bar{background:var(--navy-deep);padding:.55rem 1.1rem;display:flex;align-items:center;justify-content:space-between;margin-top:1rem}
+.sponsor-bar span{font-size:.62rem;color:rgba(240,234,224,.3);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+</style>
+</head>
+<body>
+<div class="header">
+  <div><div class="charla-logo">CHARLA <span>COPA</span></div></div>
+  <div class="nav-links">
+    <a href="ranking.html">Ranking</a>
+    <a href="/">Palpitar</a>
+    <img src="sportingbet-blue.png" class="sb-logo" alt="Sportingbet">
+  </div>
+</div>
+<div class="wrap">
+  <div class="page-title">Resultados</div>
+  <div class="day-label">Selecione o dia</div>
+  <select class="day-select" id="day-select" onchange="loadDia()">
+    <option value="">-- escolha o dia --</option>
+  </select>
+  <div id="content"><div class="empty">Selecione um dia para ver os jogos e palpites.</div></div>
+  <button class="btn btn-glass" onclick="location.href='ranking.html'">Ver ranking</button>
+</div>
+<div class="sponsor-bar">
+  <span>Patrocinador oficial</span>
+  <img src="sportingbet-white.png" style="height:16px;object-fit:contain" alt="Sportingbet">
+</div>
+<script>
+async function init(){
+  const dias=await fetch('/api/dias').then(r=>r.json());
+  const sel=document.getElementById('day-select');
+  dias.forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;sel.appendChild(o);});
+  const hoje=new Date();
+  const dHoje=String(hoje.getDate()).padStart(2,'0')+'/'+String(hoje.getMonth()+1).padStart(2,'0');
+  if(dias.includes(dHoje)){sel.value=dHoje;loadDia();}
+}
+async function loadDia(){
+  const dia=document.getElementById('day-select').value;
+  if(!dia){document.getElementById('content').innerHTML='<div class="empty">Selecione um dia para ver os jogos e palpites.</div>';return;}
+  const jogos=await fetch('/api/resultados-dia?dia='+encodeURIComponent(dia)).then(r=>r.json());
+  if(!jogos.length){document.getElementById('content').innerHTML='<div class="empty">Nenhum jogo neste dia.</div>';return;}
+  document.getElementById('content').innerHTML=jogos.map(j=>renderJogo(j)).join('');
+}
+function renderJogo(j){
+  const twoup=j.resultado?.twoup_time;
+  const twoupNome=twoup==='A'?j.time_a:twoup==='B'?j.time_b:null;
+  const scoreHTML=j.resultado
+    ?`<div class="score-num">${j.resultado.gols_a} × ${j.resultado.gols_b}</div><div class="score-lbl">Resultado final</div>`
+    :`<div class="score-pending">Aguardando</div>`;
+  const twoupBanner=twoupNome
+    ?`<div class="twoup-banner"><div style="font-size:.9rem">⚡</div><div class="twoup-banner-text"><strong>${twoupNome}</strong> abriu 2 a 0 <span class="twoup-badge">2UP</span></div></div>`:'';
+  const palpitesHTML=j.palpites.length
+    ?j.palpites.map(p=>{
+        const show2up=p.tipo&&p.tipo.includes('2UP');
+        const badge2up=show2up?`<span class="twoup-badge">2UP</span>`:'';
+        const ptsClass=p.tipo==='exato'||p.tipo==='2UP-exato'?'pts-exato':p.tipo==='vencedor'||p.tipo==='2UP-vencedor'?'pts-venc':p.tipo==='2UP'?'pts-twoup':p.tipo==='pendente'?'pts-pend':'pts-erro';
+        const ptsLabel=p.tipo==='pendente'?'—':(p.pts>0?'+'+p.pts:'0');
+        return `<div class="palpite-row">
+          <div class="pal-av">${p.nome.slice(0,2).toUpperCase()}</div>
+          <div class="pal-info"><span class="pal-nome">${p.nome}</span>${badge2up}</div>
+          <div class="pal-placar">${p.gols_a} × ${p.gols_b}</div>
+          <div class="pal-pts ${ptsClass}">${ptsLabel}</div>
+        </div>`;
+      }).join('')
+    :'<div class="no-result-note">Nenhum palpite registrado</div>';
+  const noRes=!j.resultado?'<div class="no-result-note">Resultado ainda não lançado</div>':'';
+  return `<div class="game-block">
+    <div class="game-header">
+      <span class="game-title">${j.time_a} x ${j.time_b}</span>
+      <span class="game-meta"><span class="r-badge">R${j.rodada}</span>${j.hora}</span>
+    </div>
+    <div class="game-score">
+      <div class="team-name home">${j.time_a}</div>
+      <div class="score-center">${scoreHTML}</div>
+      <div class="team-name">${j.time_b}</div>
+    </div>
+    ${twoupBanner}
+    <div class="palpites-hdr">Palpites dos participantes</div>
+    ${palpitesHTML}${noRes}
+  </div>`;
+}
+init();
+</script>
+</body>
+</html>
