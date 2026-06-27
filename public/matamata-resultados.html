@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resultados Mata-mata — Charla Copa 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0F1E5C;--navy-deep:#091244;--terra:#C4510A;--gold:#D4A000;--cream:#F0EAE0;--cream2:#F5F0EA}
+body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--cream);min-height:100vh}
+.header{background:var(--cream2);padding:.7rem 1.1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--terra)}
+.charla-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--navy);letter-spacing:.04em}
+.charla-logo span{color:var(--terra)}
+.nav-links{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.nav-links a{color:var(--terra);font-size:.74rem;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.05em}
+.nav-links a.gold{color:var(--gold)}
+.wrap{padding:1rem 1.1rem;max-width:520px;margin:0 auto}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:2.3rem;letter-spacing:.04em;margin-bottom:.2rem}
+.page-sub{font-size:.68rem;color:rgba(240,234,224,.35);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;font-weight:600}
+.fase-tabs{display:flex;gap:.35rem;margin-bottom:.85rem;flex-wrap:wrap}
+.ftab{flex:1;min-width:65px;padding:.5rem;border-radius:4px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);font-size:.62rem;font-weight:700;color:rgba(240,234,224,.4);cursor:pointer;text-align:center;text-transform:uppercase}
+.ftab.on{background:var(--terra);color:var(--cream2);border-color:var(--terra)}
+.dobrado-badge{display:inline-block;background:var(--gold);color:#2a1a00;font-size:.62rem;font-weight:700;padding:3px 10px;border-radius:2px;text-transform:uppercase;margin-bottom:.75rem}
+.match-block{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;margin-bottom:.75rem;overflow:hidden}
+.match-header{padding:.65rem 1rem;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between}
+.match-title{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.match-meta{font-size:.65rem;color:rgba(240,234,224,.35)}
+.match-score{display:grid;grid-template-columns:1fr 80px 1fr;align-items:center;gap:.5rem;padding:.85rem 1rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.team-name{font-size:.78rem;font-weight:700;color:var(--cream);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.team-name.home{text-align:right}
+.score-center{text-align:center}
+.score-num{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:var(--terra);letter-spacing:.04em;line-height:1}
+.score-pen{font-size:.62rem;color:rgba(240,234,224,.4);margin-top:1px}
+.score-lbl{font-size:.58rem;color:rgba(240,234,224,.3);text-transform:uppercase;letter-spacing:.06em;margin-top:1px}
+.score-pending{font-size:.72rem;color:rgba(240,234,224,.25);font-style:italic}
+.twoup-banner{background:rgba(212,160,0,.08);border-bottom:1px solid rgba(212,160,0,.18);padding:.5rem 1rem;display:flex;align-items:center;gap:.5rem}
+.twoup-banner-text{font-size:.7rem;color:rgba(212,160,0,.85);font-weight:600}
+.twoup-badge{display:inline-flex;align-items:center;background:var(--gold);color:#412402;font-size:.58rem;font-weight:700;padding:1px 5px;border-radius:2px;text-transform:uppercase;margin-left:4px}
+.palpites-hdr{padding:.45rem 1rem;background:rgba(0,0,0,.12);font-size:.6rem;font-weight:700;color:rgba(240,234,224,.3);text-transform:uppercase;letter-spacing:.08em}
+.palpite-row{display:flex;align-items:center;padding:.5rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);gap:.6rem}
+.palpite-row:last-child{border-bottom:none}
+.pal-av{width:26px;height:26px;border-radius:3px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:.75rem;color:rgba(240,234,224,.4);flex-shrink:0}
+.pal-info{flex:1;display:flex;align-items:center;gap:.4rem;min-width:0}
+.pal-nome{font-size:.75rem;font-weight:600;color:var(--cream)}
+.pal-placar{font-family:'Bebas Neue',sans-serif;font-size:.95rem;color:rgba(240,234,224,.4);letter-spacing:.04em;margin-left:auto;flex-shrink:0}
+.pal-pts{width:32px;height:22px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0}
+.pts-exato{background:rgba(99,153,34,.2);color:#97C459}
+.pts-venc{background:rgba(55,138,221,.2);color:#85B7EB}
+.pts-twoup{background:rgba(212,160,0,.2);color:var(--gold)}
+.pts-erro{background:rgba(255,255,255,.05);color:rgba(240,234,224,.25)}
+.pts-pend{background:rgba(255,255,255,.05);color:rgba(240,234,224,.2)}
+.vazio-msg{text-align:center;padding:2rem 1rem;color:rgba(240,234,224,.25);font-size:.78rem;font-style:italic}
+.no-result-note{padding:.6rem 1rem;font-size:.7rem;color:rgba(240,234,224,.25);text-align:center;font-style:italic}
+.btn{width:100%;padding:.85rem;border-radius:4px;border:none;cursor:pointer;font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:.45rem;font-family:'Inter',sans-serif}
+.btn-glass{background:rgba(255,255,255,.07);color:var(--cream);border:1px solid rgba(255,255,255,.12)}
+.sponsor-bar{background:var(--navy-deep);padding:.55rem 1.1rem;display:flex;align-items:center;justify-content:space-between;margin-top:1rem}
+.sponsor-bar span{font-size:.6rem;color:rgba(240,234,224,.3);text-transform:uppercase;font-weight:600}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="charla-logo">CHARLA <span>COPA</span></div>
+  <div class="nav-links">
+    <a href="matamata.html" class="gold">⚡ Palpitar</a>
+    <a href="ranking.html">Ranking</a>
+    <a href="/">Grupos</a>
+  </div>
+</div>
+<div class="wrap">
+  <div class="page-title">Resultados Mata-mata</div>
+  <div class="page-sub">Veja os confrontos, resultados e palpites de cada participante</div>
+
+  <div class="fase-tabs" id="fase-tabs">
+    <div class="ftab on" data-fase="32avos">32avos</div>
+    <div class="ftab" data-fase="oitavas">Oitavas</div>
+    <div class="ftab" data-fase="quartas">Quartas</div>
+    <div class="ftab" data-fase="semi">Semi</div>
+    <div class="ftab" data-fase="3lugar">3º Lugar</div>
+    <div class="ftab" data-fase="final">Final</div>
+  </div>
+
+  <div id="dobrado-info"></div>
+  <div id="content"><div class="vazio-msg">Carregando...</div></div>
+
+  <button class="btn btn-glass" onclick="location.href='ranking.html'">Ver ranking</button>
+</div>
+<div class="sponsor-bar">
+  <span>Patrocinador oficial</span>
+  <span style="font-family:'Bebas Neue',sans-serif;color:rgba(240,234,224,.5)">sportingbet</span>
+</div>
+
+<script>
+const NOMES = ['Cantarelli','Betao','Enzo','Matheus','Covarde','Machado','Azevedo','Phill','Blu'];
+let bracket = [];
+let allPalpites = {}; // { nome: { jogo_id: [ga,gb] } }
+let faseAtual = '32avos';
+
+function multiplicadorFase(fase) {
+  return ['quartas','semi','3lugar','final'].includes(fase) ? 2 : 1;
+}
+
+function calcularPontos(p, r, mult) {
+  const ga = parseInt(p[0]), gb = parseInt(p[1]);
+  const ra = parseInt(r.gols_a), rb = parseInt(r.gols_b);
+  let rV;
+  if (ra === rb && r.penaltis_a !== null && r.penaltis_a !== undefined) {
+    rV = parseInt(r.penaltis_a) > parseInt(r.penaltis_b) ? 'A' : 'B';
+  } else {
+    rV = ra > rb ? 'A' : ra < rb ? 'B' : 'E';
+  }
+  const pV = ga > gb ? 'A' : ga < gb ? 'B' : 'E';
+  const twoup = r.twoup_time || null;
+
+  if (ga === ra && gb === rb) return { pts: 3*mult, tipo: twoup ? '2UP-exato' : 'exato' };
+  if (pV === rV) return { pts: 1*mult, tipo: twoup ? '2UP-vencedor' : 'vencedor' };
+  if (twoup && ((twoup==='A'&&pV==='A')||(twoup==='B'&&pV==='B'))) return { pts: 1*mult, tipo: '2UP' };
+  return { pts: 0, tipo: 'erro' };
+}
+
+async function init() {
+  bracket = await fetch('/api/bracket').then(r => r.json());
+  // Busca palpites de todos os participantes
+  for (const nome of NOMES) {
+    allPalpites[nome] = await fetch('/api/bracket/palpites/' + encodeURIComponent(nome)).then(r => r.json());
+  }
+  render();
+}
+
+function setFase(fase) {
+  faseAtual = fase;
+  document.querySelectorAll('.ftab').forEach(t => t.classList.toggle('on', t.dataset.fase === fase));
+  render();
+}
+
+function render() {
+  const dobrado = multiplicadorFase(faseAtual) === 2;
+  document.getElementById('dobrado-info').innerHTML = dobrado
+    ? '<div class="dobrado-badge">⚡ Pontuação DOBRADA nesta fase</div>' : '';
+
+  const jogos = bracket.filter(b => b.fase === faseAtual);
+  const comTimes = jogos.filter(j => j.slot_a && j.slot_b);
+  const container = document.getElementById('content');
+
+  if (comTimes.length === 0) {
+    container.innerHTML = '<div class="vazio-msg">Nenhum confronto definido ainda para esta fase.</div>';
+    return;
+  }
+
+  const mult = multiplicadorFase(faseAtual);
+
+  container.innerHTML = comTimes.map(j => {
+    const r = j.resultado;
+    const twoupNome = r && r.twoup_time === 'A' ? j.slot_a : (r && r.twoup_time === 'B' ? j.slot_b : null);
+
+    const scoreHTML = r
+      ? `<div class="score-num">${r.gols_a} × ${r.gols_b}</div>` +
+        (r.penaltis_a !== null && r.penaltis_a !== undefined ? `<div class="score-pen">Pênaltis: ${r.penaltis_a} × ${r.penaltis_b}</div>` : '') +
+        `<div class="score-lbl">Resultado</div>`
+      : `<div class="score-pending">Aguardando</div>`;
+
+    const twoupBanner = twoupNome
+      ? `<div class="twoup-banner"><div style="font-size:.85rem">⚡</div><div class="twoup-banner-text"><strong>${twoupNome}</strong> abriu 2 a 0 <span class="twoup-badge">2UP</span></div></div>`
+      : '';
+
+    const palpitesArr = NOMES.map(nome => {
+      const p = allPalpites[nome] ? allPalpites[nome][j.jogo_id] : undefined;
+      if (!p) return null;
+      const calc = r ? calcularPontos(p, r, mult) : { pts: 0, tipo: 'pendente' };
+      return { nome, ga: p[0], gb: p[1], pts: calc.pts, tipo: calc.tipo };
+    }).filter(Boolean);
+
+    const palpitesHTML = palpitesArr.length
+      ? palpitesArr.map(p => {
+          const show2up = p.tipo && p.tipo.includes('2UP');
+          const badge2up = show2up ? `<span class="twoup-badge">2UP</span>` : '';
+          const ptsClass = p.tipo==='exato'||p.tipo==='2UP-exato' ? 'pts-exato'
+            : p.tipo==='vencedor'||p.tipo==='2UP-vencedor' ? 'pts-venc'
+            : p.tipo==='2UP' ? 'pts-twoup'
+            : p.tipo==='pendente' ? 'pts-pend' : 'pts-erro';
+          const ptsLabel = p.tipo==='pendente' ? '—' : (p.pts>0 ? '+'+p.pts : '0');
+          return `<div class="palpite-row">
+            <div class="pal-av">${p.nome.slice(0,2).toUpperCase()}</div>
+            <div class="pal-info"><span class="pal-nome">${p.nome}</span>${badge2up}</div>
+            <div class="pal-placar">${p.ga} × ${p.gb}</div>
+            <div class="pal-pts ${ptsClass}">${ptsLabel}</div>
+          </div>`;
+        }).join('')
+      : '<div class="no-result-note">Nenhum palpite registrado</div>';
+
+    const noResNote = !r ? '<div class="no-result-note">Resultado ainda não lançado pelo administrador</div>' : '';
+    const meta = [j.data, j.hora, j.local].filter(Boolean).join(' · ');
+
+    return `<div class="match-block">
+      <div class="match-header">
+        <span class="match-title">${j.slot_a} x ${j.slot_b}</span>
+        ${meta ? `<span class="match-meta">${meta}</span>` : ''}
+      </div>
+      <div class="match-score">
+        <div class="team-name home">${j.slot_a}</div>
+        <div class="score-center">${scoreHTML}</div>
+        <div class="team-name">${j.slot_b}</div>
+      </div>
+      ${twoupBanner}
+      <div class="palpites-hdr">Palpites dos participantes</div>
+      ${palpitesHTML}${noResNote}
+    </div>`;
+  }).join('');
+}
+
+document.querySelectorAll('.ftab').forEach(t => t.addEventListener('click', () => setFase(t.dataset.fase)));
+init();
+</script>
+</body>
+</html>
