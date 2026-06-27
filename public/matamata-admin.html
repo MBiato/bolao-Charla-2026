@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mata-mata Admin — Charla Copa 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0F1E5C;--navy-deep:#091244;--terra:#C4510A;--gold:#D4A000;--cream:#F0EAE0;--cream2:#F5F0EA}
+body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--cream);min-height:100vh}
+.header{background:var(--cream2);padding:.7rem 1.1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--terra)}
+.charla-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--navy);letter-spacing:.04em}
+.charla-logo span{color:var(--terra)}
+.nav-links a{color:var(--terra);font-size:.78rem;font-weight:700;text-decoration:none;text-transform:uppercase;margin-left:.75rem}
+.wrap{padding:1rem 1.1rem;max-width:520px;margin:0 auto}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.04em;margin-bottom:.75rem}
+.card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:1rem;margin-bottom:.75rem}
+.label{font-size:.65rem;font-weight:700;color:rgba(240,234,224,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem}
+input,select{width:100%;height:42px;border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:0 .75rem;font-size:.88rem;background:rgba(255,255,255,.08);color:var(--cream);margin-bottom:.5rem}
+select option{background:#0F1E5C}
+.btn{width:100%;padding:.8rem;border-radius:4px;border:none;cursor:pointer;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.45rem}
+.btn-terra{background:var(--terra);color:var(--cream2)}
+.btn-gold{background:var(--gold);color:#2a1a00}
+.btn-glass{background:rgba(255,255,255,.07);color:var(--cream);border:1px solid rgba(255,255,255,.12)}
+.tabs{display:flex;gap:.4rem;margin-bottom:.85rem;flex-wrap:wrap}
+.tab{flex:1;min-width:70px;padding:.5rem;border-radius:4px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);font-size:.65rem;font-weight:700;color:rgba(240,234,224,.4);cursor:pointer;text-align:center;text-transform:uppercase}
+.tab.on{background:var(--terra);color:var(--cream2);border-color:var(--terra)}
+.fase-sec{display:none}.fase-sec.on{display:block}
+.match-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:.75rem;margin-bottom:.5rem}
+.match-id{font-size:.6rem;color:rgba(240,234,224,.3);margin-bottom:.4rem;text-transform:uppercase}
+.match-teams{font-size:.85rem;font-weight:700;margin-bottom:.5rem}
+.match-teams .vazio{color:rgba(240,234,224,.25);font-style:italic;font-weight:400}
+.score-row{display:grid;grid-template-columns:1fr 50px 16px 50px 1fr;align-items:center;gap:.35rem;margin-bottom:.5rem}
+.sin{width:100%;height:40px;border:1px solid rgba(255,255,255,.15);border-radius:4px;text-align:center;font-size:1.2rem;font-weight:900;background:rgba(255,255,255,.08);color:var(--cream);font-family:'Bebas Neue',sans-serif}
+.tname{font-size:.7rem;font-weight:700;text-align:center}
+.vs{text-align:center;color:rgba(255,255,255,.2)}
+.pen-row{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:.5rem}
+.pen-row input{margin-bottom:0}
+.twoup-toggle{display:flex;align-items:center;gap:.5rem;padding:.5rem;background:rgba(212,160,0,.06);border:1px solid rgba(212,160,0,.15);border-radius:4px;margin-bottom:.5rem;font-size:.72rem;color:var(--gold);cursor:pointer}
+.twoup-toggle input{width:16px;height:16px;margin:0;accent-color:var(--gold)}
+.msg{padding:.5rem .75rem;border-radius:4px;font-size:.75rem;margin-bottom:.5rem;display:none}
+.msg.ok{background:rgba(0,180,80,.1);color:#5fdb8a;border:1px solid rgba(0,180,80,.25);display:block}
+.msg.err{background:rgba(220,50,50,.1);color:#f08080;border:1px solid rgba(220,50,50,.25);display:block}
+.info-box{background:rgba(255,255,255,.05);border-radius:4px;padding:.6rem .8rem;font-size:.72rem;color:rgba(240,234,224,.5);margin-bottom:.75rem;border-left:3px solid var(--terra)}
+.fase-badge{display:inline-block;background:var(--terra);color:var(--cream2);font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:2px;text-transform:uppercase;margin-bottom:.5rem}
+.fase-badge.dobrado{background:var(--gold);color:#2a1a00}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="charla-logo">CHARLA <span>COPA</span></div>
+  <div class="nav-links">
+    <a href="/">Voltar</a>
+    <a href="admin.html">Grupos</a>
+  </div>
+</div>
+<div class="wrap">
+  <div class="page-title">Mata-mata Admin</div>
+  <div class="card">
+    <div class="label">Senha de acesso</div>
+    <input type="password" id="senha" placeholder="Senha do administrador"/>
+  </div>
+
+  <div class="tabs" id="fase-tabs">
+    <div class="tab on" data-fase="32avos">32avos</div>
+    <div class="tab" data-fase="oitavas">Oitavas</div>
+    <div class="tab" data-fase="quartas">Quartas</div>
+    <div class="tab" data-fase="semi">Semi</div>
+    <div class="tab" data-fase="3lugar">3º Lugar</div>
+    <div class="tab" data-fase="final">Final</div>
+  </div>
+
+  <div id="info-fase" class="info-box"></div>
+  <div id="matches-container"></div>
+  <div class="msg" id="msg"></div>
+</div>
+
+<script>
+let bracket = [];
+let senha = '';
+let faseAtual = '32avos';
+
+const FASE_INFO = {
+  '32avos': 'Cadastre os 16 confrontos manualmente com os times reais (conforme tabela oficial da FIFA). Pontuação normal: 3pts exato / 1pt vencedor.',
+  'oitavas': 'Times preenchidos automaticamente pelos vencedores dos 32avos. Pontuação normal: 3pts exato / 1pt vencedor.',
+  'quartas': 'Times preenchidos automaticamente. A PARTIR DAQUI a pontuação é DOBRADA: 6pts exato / 2pts vencedor.',
+  'semi': 'Times preenchidos automaticamente. Pontuação dobrada: 6pts exato / 2pts vencedor. Perdedores vão para a disputa de 3º lugar.',
+  '3lugar': 'Disputa entre os perdedores das semifinais. Pontuação dobrada: 6pts exato / 2pts vencedor.',
+  'final': 'A grande final! Pontuação dobrada: 6pts exato / 2pts vencedor.'
+};
+
+async function loadBracket() {
+  bracket = await fetch('/api/bracket').then(r => r.json());
+  render();
+}
+
+function setFase(fase) {
+  faseAtual = fase;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.fase === fase));
+  render();
+}
+
+function render() {
+  document.getElementById('info-fase').textContent = FASE_INFO[faseAtual];
+  const jogos = bracket.filter(b => b.fase === faseAtual);
+  const container = document.getElementById('matches-container');
+
+  container.innerHTML = jogos.map(j => {
+    const editavel = faseAtual === '32avos';
+    const temTimes = j.slot_a && j.slot_b;
+    const dobrado = ['quartas','semi','3lugar','final'].includes(j.fase);
+
+    let html = `<div class="match-card" data-jogo="${j.jogo_id}">`;
+    html += `<div class="match-id">Jogo #${j.jogo_id}</div>`;
+    html += `<span class="fase-badge ${dobrado ? 'dobrado' : ''}">${dobrado ? 'Pontos x2' : 'Pontos normais'}</span>`;
+
+    if (editavel) {
+      html += `
+        <div class="label">Time A</div>
+        <input type="text" class="time-a-input" placeholder="Ex: Brasil" value="${j.slot_a || ''}">
+        <div class="label">Time B</div>
+        <input type="text" class="time-b-input" placeholder="Ex: Japão" value="${j.slot_b || ''}">
+        <div class="label">Data / Hora / Local (opcional)</div>
+        <input type="text" class="data-input" placeholder="Ex: 28/06" value="${j.data || ''}">
+        <input type="text" class="hora-input" placeholder="Ex: 16h" value="${j.hora || ''}">
+        <input type="text" class="local-input" placeholder="Ex: Houston" value="${j.local || ''}">
+        <button class="btn btn-glass" onclick="salvarTimes(${j.jogo_id})">Salvar times</button>
+      `;
+    } else {
+      html += `<div class="match-teams">
+        ${temTimes ? `${j.slot_a} <span style="opacity:.4">x</span> ${j.slot_b}` : '<span class="vazio">Aguardando classificação...</span>'}
+      </div>`;
+    }
+
+    if (temTimes) {
+      const r = j.resultado;
+      html += `
+        <div class="label" style="margin-top:.5rem">Resultado (tempo normal / prorrogação)</div>
+        <div class="score-row">
+          <div class="tname">${j.slot_a}</div>
+          <input class="sin res-a" type="number" min="0" value="${r ? r.gols_a : ''}" placeholder="—">
+          <div class="vs">×</div>
+          <input class="sin res-b" type="number" min="0" value="${r ? r.gols_b : ''}" placeholder="—">
+          <div class="tname">${j.slot_b}</div>
+        </div>
+        <div class="label">Pênaltis (deixe em branco se não houve)</div>
+        <div class="pen-row">
+          <input type="number" class="pen-a" min="0" placeholder="Pênaltis ${j.slot_a}" value="${r && r.penaltis_a !== null ? r.penaltis_a : ''}">
+          <input type="number" class="pen-b" min="0" placeholder="Pênaltis ${j.slot_b}" value="${r && r.penaltis_b !== null ? r.penaltis_b : ''}">
+        </div>
+        <label class="twoup-toggle">
+          <input type="checkbox" class="twoup-check" ${r && r.twoup_time ? 'checked' : ''}>
+          ⚡ Condição 2UP ativada
+        </label>
+        <select class="twoup-time-sel">
+          <option value="">-- qual time abriu 2x0 --</option>
+          <option value="A" ${r && r.twoup_time === 'A' ? 'selected' : ''}>${j.slot_a}</option>
+          <option value="B" ${r && r.twoup_time === 'B' ? 'selected' : ''}>${j.slot_b}</option>
+        </select>
+        <button class="btn btn-terra" onclick="salvarResultado(${j.jogo_id})">Salvar resultado e avançar vencedor</button>
+      `;
+    }
+
+    html += `</div>`;
+    return html;
+  }).join('') || '<div class="info-box">Nenhum jogo nesta fase ainda.</div>';
+}
+
+async function salvarTimes(jogoId) {
+  senha = document.getElementById('senha').value;
+  if (!senha) { showMsg('err', 'Informe a senha.'); return; }
+  const card = document.querySelector(`[data-jogo="${jogoId}"]`);
+  const time_a = card.querySelector('.time-a-input').value.trim();
+  const time_b = card.querySelector('.time-b-input').value.trim();
+  const data = card.querySelector('.data-input').value.trim();
+  const hora = card.querySelector('.hora-input').value.trim();
+  const local = card.querySelector('.local-input').value.trim();
+  if (!time_a || !time_b) { showMsg('err', 'Informe os dois times.'); return; }
+
+  const res = await fetch('/api/bracket/definir-times', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ senha, jogo_id: jogoId, time_a, time_b, data, hora, local })
+  });
+  if (res.ok) { showMsg('ok', 'Times salvos!'); loadBracket(); }
+  else showMsg('err', 'Senha incorreta.');
+}
+
+async function salvarResultado(jogoId) {
+  senha = document.getElementById('senha').value;
+  if (!senha) { showMsg('err', 'Informe a senha.'); return; }
+  const card = document.querySelector(`[data-jogo="${jogoId}"]`);
+  const gols_a = card.querySelector('.res-a').value;
+  const gols_b = card.querySelector('.res-b').value;
+  const pen_a = card.querySelector('.pen-a').value;
+  const pen_b = card.querySelector('.pen-b').value;
+  const twoupCheck = card.querySelector('.twoup-check').checked;
+  const twoup_time = twoupCheck ? card.querySelector('.twoup-time-sel').value : null;
+
+  if (gols_a === '' || gols_b === '') { showMsg('err', 'Informe o placar.'); return; }
+  if (gols_a === gols_b && pen_a === '' && pen_b === '') {
+    showMsg('err', 'Jogo empatado precisa de pênaltis para definir quem avança.'); return;
+  }
+  if (twoupCheck && !twoup_time) { showMsg('err', 'Selecione qual time fez o 2UP.'); return; }
+
+  const res = await fetch('/api/bracket/resultado', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      senha, jogo_id: jogoId,
+      gols_a: parseInt(gols_a), gols_b: parseInt(gols_b),
+      penaltis_a: pen_a !== '' ? parseInt(pen_a) : null,
+      penaltis_b: pen_b !== '' ? parseInt(pen_b) : null,
+      twoup_time
+    })
+  });
+  if (res.ok) {
+    const data = await res.json();
+    showMsg('ok', `Resultado salvo! ${data.vencedor} avança de fase.`);
+    loadBracket();
+  } else showMsg('err', 'Senha incorreta.');
+}
+
+function showMsg(type, txt) {
+  const el = document.getElementById('msg');
+  el.className = 'msg ' + type;
+  el.textContent = txt;
+  setTimeout(() => { el.className = 'msg'; }, 4000);
+}
+
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => setFase(t.dataset.fase)));
+loadBracket();
+</script>
+</body>
+</html>

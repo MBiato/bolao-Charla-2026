@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mata-mata — Charla Copa 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0F1E5C;--navy-deep:#091244;--terra:#C4510A;--gold:#D4A000;--cream:#F0EAE0;--cream2:#F5F0EA}
+body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--cream);min-height:100vh}
+.header{background:var(--cream2);padding:.7rem 1.1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--terra);position:sticky;top:0;z-index:10}
+.charla-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--navy);letter-spacing:.04em}
+.charla-logo span{color:var(--terra)}
+.nav-links a{color:var(--terra);font-size:.75rem;font-weight:700;text-decoration:none;text-transform:uppercase;margin-left:.6rem}
+.screen{display:none;padding:1rem 1.1rem;max-width:480px;margin:0 auto}
+.screen.on{display:block}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:2.3rem;letter-spacing:.04em;margin-bottom:.2rem}
+.page-sub{font-size:.68rem;color:rgba(240,234,224,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem}
+.player-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem;margin-bottom:.85rem}
+.player-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:.8rem .4rem;cursor:pointer;text-align:center}
+.player-btn.sel{background:var(--terra);border-color:var(--terra)}
+.player-btn .av{width:36px;height:36px;border-radius:3px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:.9rem;color:rgba(240,234,224,.5);margin:0 auto .35rem}
+.player-btn.sel .av{background:rgba(255,255,255,.2);color:var(--cream2)}
+.player-btn .pname{font-size:.72rem;font-weight:700;color:rgba(240,234,224,.6);text-transform:uppercase}
+.player-btn.sel .pname{color:var(--cream2)}
+.btn{width:100%;padding:.85rem;border-radius:4px;border:none;cursor:pointer;font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.btn-cream{background:var(--cream2);color:var(--navy)}
+.btn-cream:disabled{background:rgba(255,255,255,.1);color:rgba(255,255,255,.2)}
+.btn-terra{background:var(--terra);color:var(--cream2);margin-top:.5rem}
+.btn-glass{background:rgba(255,255,255,.07);color:var(--cream);border:1px solid rgba(255,255,255,.12);margin-top:.5rem}
+.fase-tabs{display:flex;gap:.35rem;margin-bottom:.85rem;flex-wrap:wrap}
+.ftab{flex:1;min-width:65px;padding:.5rem;border-radius:4px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);font-size:.62rem;font-weight:700;color:rgba(240,234,224,.4);cursor:pointer;text-align:center;text-transform:uppercase}
+.ftab.on{background:var(--terra);color:var(--cream2);border-color:var(--terra)}
+.dobrado-badge{display:inline-block;background:var(--gold);color:#2a1a00;font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:2px;text-transform:uppercase;margin-bottom:.6rem}
+.match-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:.8rem;margin-bottom:.5rem}
+.match-card.filled{border-color:var(--terra)}
+.match-meta{font-size:.62rem;color:rgba(240,234,224,.3);margin-bottom:.5rem;text-align:center;text-transform:uppercase}
+.match-row{display:grid;grid-template-columns:1fr 50px 16px 50px 1fr;align-items:center;gap:.35rem}
+.tname{font-size:.72rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tname.home{text-align:right}
+.sin{width:100%;height:42px;border:1px solid rgba(255,255,255,.15);border-radius:4px;text-align:center;font-size:1.25rem;font-weight:900;background:rgba(255,255,255,.07);color:var(--cream);font-family:'Bebas Neue',sans-serif}
+.sin.ok{border-color:var(--terra);background:rgba(196,81,10,.18);color:var(--terra)}
+.vs{text-align:center;color:rgba(255,255,255,.2)}
+.vazio-msg{text-align:center;padding:1.5rem;color:rgba(240,234,224,.3);font-size:.8rem;font-style:italic}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--terra);color:var(--cream2);padding:.5rem 1.25rem;border-radius:3px;font-size:.78rem;font-weight:700;z-index:999;opacity:0;transition:opacity .25s;text-transform:uppercase}
+.toast.show{opacity:1}
+.sponsor-bar{background:var(--navy-deep);padding:.55rem 1.1rem;display:flex;align-items:center;justify-content:space-between}
+.sponsor-bar span{font-size:.6rem;color:rgba(240,234,224,.3);text-transform:uppercase;font-weight:600}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="charla-logo">CHARLA <span>COPA</span></div>
+  <div class="nav-links">
+    <a href="ranking.html">Ranking</a>
+    <a href="/">Grupos</a>
+  </div>
+</div>
+
+<div class="screen on" id="s-pick">
+  <div class="page-title">Mata-mata</div>
+  <div class="page-sub">Selecione seu nome para palpitar</div>
+  <div class="player-grid" id="player-grid"></div>
+  <button class="btn btn-cream" id="btn-start" disabled onclick="entrar()">Entrar e palpitar</button>
+</div>
+
+<div class="screen" id="s-fases">
+  <div class="page-title" id="player-name-title"></div>
+  <div class="page-sub">Mata-mata — Copa do Mundo 2026</div>
+  <div class="fase-tabs" id="fase-tabs">
+    <div class="ftab on" data-fase="32avos">32avos</div>
+    <div class="ftab" data-fase="oitavas">Oitavas</div>
+    <div class="ftab" data-fase="quartas">Quartas</div>
+    <div class="ftab" data-fase="semi">Semi</div>
+    <div class="ftab" data-fase="3lugar">3º Lugar</div>
+    <div class="ftab" data-fase="final">Final</div>
+  </div>
+  <div id="dobrado-info"></div>
+  <div id="matches-container"></div>
+  <button class="btn btn-glass" onclick="voltar()">Trocar participante</button>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="sponsor-bar">
+  <span>Patrocinador oficial</span>
+  <span style="font-family:'Bebas Neue',sans-serif;color:rgba(240,234,224,.5)">sportingbet</span>
+</div>
+
+<script>
+const NOMES = ['Cantarelli','Betao','Enzo','Matheus','Covarde','Machado','Azevedo','Phill','Blu'];
+let currentPlayer = null;
+let bracket = [];
+let palpites = {};
+let faseAtual = '32avos';
+
+function buildGrid() {
+  const g = document.getElementById('player-grid');
+  NOMES.forEach(n => {
+    const d = document.createElement('div');
+    d.className = 'player-btn'; d.id = 'pb-' + n;
+    d.onclick = () => selectPlayer(n);
+    d.innerHTML = `<div class="av">${n.slice(0,2).toUpperCase()}</div><div class="pname">${n}</div>`;
+    g.appendChild(d);
+  });
+}
+
+function selectPlayer(n) {
+  document.querySelectorAll('.player-btn').forEach(b => b.classList.remove('sel'));
+  document.getElementById('pb-' + n).classList.add('sel');
+  currentPlayer = n;
+  const btn = document.getElementById('btn-start');
+  btn.disabled = false; btn.textContent = 'Entrar como ' + n.toUpperCase();
+}
+
+async function entrar() {
+  if (!currentPlayer) return;
+  palpites = await fetch('/api/bracket/palpites/' + encodeURIComponent(currentPlayer)).then(r => r.json());
+  bracket = await fetch('/api/bracket').then(r => r.json());
+  document.getElementById('player-name-title').textContent = currentPlayer;
+  show('s-fases');
+  renderFase();
+}
+
+function setFase(fase) {
+  faseAtual = fase;
+  document.querySelectorAll('.ftab').forEach(t => t.classList.toggle('on', t.dataset.fase === fase));
+  renderFase();
+}
+
+function renderFase() {
+  const dobrado = ['quartas','semi','3lugar','final'].includes(faseAtual);
+  document.getElementById('dobrado-info').innerHTML = dobrado
+    ? '<div class="dobrado-badge">⚡ Pontuação DOBRADA nesta fase</div>' : '';
+
+  const jogos = bracket.filter(b => b.fase === faseAtual);
+  const container = document.getElementById('matches-container');
+
+  const comTimes = jogos.filter(j => j.slot_a && j.slot_b);
+  if (comTimes.length === 0) {
+    container.innerHTML = '<div class="vazio-msg">Aguardando classificação dos times para esta fase...</div>';
+    return;
+  }
+
+  container.innerHTML = comTimes.map(j => {
+    const p = palpites[j.jogo_id];
+    const va = p !== undefined ? p[0] : '';
+    const vb = p !== undefined ? p[1] : '';
+    const filled = va !== '' && vb !== '' ? 'filled' : '';
+    const meta = [j.data, j.hora, j.local].filter(Boolean).join(' · ');
+    return `<div class="match-card ${filled}" id="mc-${j.jogo_id}">
+      ${meta ? `<div class="match-meta">${meta}</div>` : ''}
+      <div class="match-row">
+        <div class="tname home">${j.slot_a}</div>
+        <input class="sin ${va!==''?'ok':''}" type="number" min="0" id="ga-${j.jogo_id}" value="${va}" placeholder="—" oninput="onInput(${j.jogo_id})">
+        <div class="vs">×</div>
+        <input class="sin ${vb!==''?'ok':''}" type="number" min="0" id="gb-${j.jogo_id}" value="${vb}" placeholder="—" oninput="onInput(${j.jogo_id})">
+        <div class="tname">${j.slot_b}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function onInput(jogoId) {
+  const a = document.getElementById('ga-' + jogoId);
+  const b = document.getElementById('gb-' + jogoId);
+  a.classList.toggle('ok', a.value !== '');
+  b.classList.toggle('ok', b.value !== '');
+  const card = document.getElementById('mc-' + jogoId);
+  if (a.value !== '' && b.value !== '') {
+    const ga = parseInt(a.value), gb = parseInt(b.value);
+    palpites[jogoId] = [ga, gb];
+    card.classList.add('filled');
+    await fetch('/api/palpites', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ nome: currentPlayer, jogo_id: jogoId, gols_a: ga, gols_b: gb })
+    });
+    showToast('✓ Salvo');
+  } else card.classList.remove('filled');
+}
+
+function voltar() {
+  currentPlayer = null;
+  document.querySelectorAll('.player-btn').forEach(b => b.classList.remove('sel'));
+  document.getElementById('btn-start').disabled = true;
+  document.getElementById('btn-start').textContent = 'Entrar e palpitar';
+  show('s-pick');
+}
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => t.classList.remove('show'), 1200);
+}
+
+document.querySelectorAll('.ftab').forEach(t => t.addEventListener('click', () => setFase(t.dataset.fase)));
+buildGrid();
+</script>
+</body>
+</html>
