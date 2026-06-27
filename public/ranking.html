@@ -13,8 +13,9 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--cream);mi
 .charla-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--navy);letter-spacing:.04em;line-height:1}
 .charla-logo span{color:var(--terra)}
 .sb-logo{height:20px;object-fit:contain}
-.nav-links{display:flex;align-items:center;gap:.75rem}
-.nav-links a{color:var(--terra);font-size:.78rem;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.06em}
+.nav-links{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.nav-links a{color:var(--terra);font-size:.74rem;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.05em}
+.nav-links a.gold{color:var(--gold)}
 .wrap{padding:1rem 1.1rem;max-width:480px;margin:0 auto}
 .page-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--cream);letter-spacing:.04em;line-height:1;margin-bottom:.2rem}
 .page-sub{font-size:.68rem;color:rgba(240,234,224,.35);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem;font-weight:600;display:flex;align-items:center;gap:.4rem}
@@ -46,6 +47,7 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--cream);mi
 .twoup-badge{display:inline-flex;align-items:center;background:var(--gold);color:#412402;font-size:.58rem;font-weight:700;padding:1px 5px;border-radius:2px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
 .btn{width:100%;padding:.85rem;border-radius:4px;border:none;cursor:pointer;font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:.45rem;font-family:'Inter',sans-serif}
 .btn-cream{background:var(--cream2);color:var(--navy)}
+.btn-gold{background:var(--gold);color:#2a1a00}
 .btn-glass{background:rgba(255,255,255,.07);color:var(--cream);border:1px solid rgba(255,255,255,.12)}
 .empty{text-align:center;padding:3rem 1rem;color:rgba(240,234,224,.3)}
 .sponsor-bar{background:var(--navy-deep);padding:.55rem 1.1rem;display:flex;align-items:center;justify-content:space-between;margin-top:1rem}
@@ -56,6 +58,7 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--cream);mi
 <div class="header">
   <div><div class="charla-logo">CHARLA <span>COPA</span></div></div>
   <div class="nav-links">
+    <a href="matamata.html" class="gold">⚡ Mata-mata</a>
     <a href="resultados.html">Resultados</a>
     <a href="/">Palpitar</a>
     <img src="sportingbet-blue.png" class="sb-logo" alt="Sportingbet">
@@ -70,6 +73,7 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--cream);mi
   </div>
   <div id="content"><div class="empty">Carregando...</div></div>
   <button class="btn btn-cream" onclick="load()">Atualizar agora</button>
+  <button class="btn btn-gold" onclick="location.href='matamata.html'">⚡ Ver mata-mata</button>
   <button class="btn btn-glass" onclick="location.href='/'">Dar palpites</button>
 </div>
 <div class="sponsor-bar">
