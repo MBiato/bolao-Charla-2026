@@ -49,9 +49,6 @@ async function initDB() {
   console.log('Banco pronto!');
 }
 
-// ════════════════════════════════════════════════════════════════════════════
-// FASE DE GRUPOS — 72 jogos — data e horário LOCAL do estádio — fonte FIFA
-// ════════════════════════════════════════════════════════════════════════════
 const JOGOS = [
   [ 1, 1, "11/06", "16h",   "Mexico",               "Africa do Sul"],
   [ 2, 1, "11/06", "20h",   "Coreia do Sul",         "Rep. Tcheca"],
@@ -130,75 +127,64 @@ const JOGOS = [
 const NOMES = ['Cantarelli','Betao','Enzo','Matheus','Covarde','Machado','Azevedo','Phill','Blu'];
 
 // ════════════════════════════════════════════════════════════════════════════
-// BRACKET DO MATA-MATA — jogo_id 1000+ para não colidir com fase de grupos
-// Fases: "32avos", "oitavas", "quartas", "semi", "3lugar", "final"
+// BRACKET DO MATA-MATA — estrutura 100% conforme chaveamento oficial FIFA
+// Validado contra o bracket publicado em fifa.com em 28/06/2026 (J73-J104)
 // ════════════════════════════════════════════════════════════════════════════
-
-// Estrutura fixa do bracket: define para onde vai o vencedor/perdedor de cada jogo.
-// Os jogos dos 32avos (1001-1016) têm os times definidos manualmente pelo admin.
-// Os jogos de oitavas em diante são preenchidos automaticamente.
 const BRACKET_TEMPLATE = [
-  // ── 32-AVOS (1001-1016) — times cadastrados manualmente pelo admin ─────────
-  // destino_vencedor indica o jogo_id da fase seguinte, destino_vencedor_slot indica 'A' ou 'B' nesse jogo
-  { jogo_id: 1001, fase: '32avos', destino_vencedor: 1101, destino_vencedor_slot: 'A' },
-  { jogo_id: 1002, fase: '32avos', destino_vencedor: 1101, destino_vencedor_slot: 'B' },
-  { jogo_id: 1003, fase: '32avos', destino_vencedor: 1102, destino_vencedor_slot: 'A' },
+  { jogo_id: 1001, fase: '32avos', destino_vencedor: 1102, destino_vencedor_slot: 'A' },
+  { jogo_id: 1002, fase: '32avos', destino_vencedor: 1103, destino_vencedor_slot: 'A' },
+  { jogo_id: 1003, fase: '32avos', destino_vencedor: 1101, destino_vencedor_slot: 'A' },
   { jogo_id: 1004, fase: '32avos', destino_vencedor: 1102, destino_vencedor_slot: 'B' },
-  { jogo_id: 1005, fase: '32avos', destino_vencedor: 1103, destino_vencedor_slot: 'A' },
-  { jogo_id: 1006, fase: '32avos', destino_vencedor: 1103, destino_vencedor_slot: 'B' },
+  { jogo_id: 1005, fase: '32avos', destino_vencedor: 1103, destino_vencedor_slot: 'B' },
+  { jogo_id: 1006, fase: '32avos', destino_vencedor: 1101, destino_vencedor_slot: 'B' },
   { jogo_id: 1007, fase: '32avos', destino_vencedor: 1104, destino_vencedor_slot: 'A' },
   { jogo_id: 1008, fase: '32avos', destino_vencedor: 1104, destino_vencedor_slot: 'B' },
-  { jogo_id: 1009, fase: '32avos', destino_vencedor: 1105, destino_vencedor_slot: 'A' },
-  { jogo_id: 1010, fase: '32avos', destino_vencedor: 1105, destino_vencedor_slot: 'B' },
-  { jogo_id: 1011, fase: '32avos', destino_vencedor: 1106, destino_vencedor_slot: 'A' },
-  { jogo_id: 1012, fase: '32avos', destino_vencedor: 1106, destino_vencedor_slot: 'B' },
-  { jogo_id: 1013, fase: '32avos', destino_vencedor: 1107, destino_vencedor_slot: 'A' },
+  { jogo_id: 1009, fase: '32avos', destino_vencedor: 1106, destino_vencedor_slot: 'B' },
+  { jogo_id: 1010, fase: '32avos', destino_vencedor: 1106, destino_vencedor_slot: 'A' },
+  { jogo_id: 1011, fase: '32avos', destino_vencedor: 1105, destino_vencedor_slot: 'B' },
+  { jogo_id: 1012, fase: '32avos', destino_vencedor: 1105, destino_vencedor_slot: 'A' },
+  { jogo_id: 1013, fase: '32avos', destino_vencedor: 1108, destino_vencedor_slot: 'A' },
   { jogo_id: 1014, fase: '32avos', destino_vencedor: 1107, destino_vencedor_slot: 'B' },
-  { jogo_id: 1015, fase: '32avos', destino_vencedor: 1108, destino_vencedor_slot: 'A' },
+  { jogo_id: 1015, fase: '32avos', destino_vencedor: 1107, destino_vencedor_slot: 'A' },
   { jogo_id: 1016, fase: '32avos', destino_vencedor: 1108, destino_vencedor_slot: 'B' },
 
-  // ── OITAVAS (1101-1108) — preenchido automaticamente ────────────────────────
   { jogo_id: 1101, fase: 'oitavas', destino_vencedor: 1201, destino_vencedor_slot: 'A' },
   { jogo_id: 1102, fase: 'oitavas', destino_vencedor: 1201, destino_vencedor_slot: 'B' },
-  { jogo_id: 1103, fase: 'oitavas', destino_vencedor: 1202, destino_vencedor_slot: 'A' },
-  { jogo_id: 1104, fase: 'oitavas', destino_vencedor: 1202, destino_vencedor_slot: 'B' },
-  { jogo_id: 1105, fase: 'oitavas', destino_vencedor: 1203, destino_vencedor_slot: 'A' },
-  { jogo_id: 1106, fase: 'oitavas', destino_vencedor: 1203, destino_vencedor_slot: 'B' },
+  { jogo_id: 1103, fase: 'oitavas', destino_vencedor: 1203, destino_vencedor_slot: 'A' },
+  { jogo_id: 1104, fase: 'oitavas', destino_vencedor: 1203, destino_vencedor_slot: 'B' },
+  { jogo_id: 1105, fase: 'oitavas', destino_vencedor: 1202, destino_vencedor_slot: 'A' },
+  { jogo_id: 1106, fase: 'oitavas', destino_vencedor: 1202, destino_vencedor_slot: 'B' },
   { jogo_id: 1107, fase: 'oitavas', destino_vencedor: 1204, destino_vencedor_slot: 'A' },
   { jogo_id: 1108, fase: 'oitavas', destino_vencedor: 1204, destino_vencedor_slot: 'B' },
 
-  // ── QUARTAS (1201-1204) — pontuação DOBRADA a partir daqui ──────────────────
   { jogo_id: 1201, fase: 'quartas', destino_vencedor: 1301, destino_vencedor_slot: 'A' },
   { jogo_id: 1202, fase: 'quartas', destino_vencedor: 1301, destino_vencedor_slot: 'B' },
   { jogo_id: 1203, fase: 'quartas', destino_vencedor: 1302, destino_vencedor_slot: 'A' },
   { jogo_id: 1204, fase: 'quartas', destino_vencedor: 1302, destino_vencedor_slot: 'B' },
 
-  // ── SEMIFINAL (1301-1302) — vencedores → final, perdedores → 3º lugar ───────
   { jogo_id: 1301, fase: 'semi', destino_vencedor: 1401, destino_vencedor_slot: 'A', destino_perdedor: 1400, destino_perdedor_slot: 'A' },
   { jogo_id: 1302, fase: 'semi', destino_vencedor: 1401, destino_vencedor_slot: 'B', destino_perdedor: 1400, destino_perdedor_slot: 'B' },
 
-  // ── 3º LUGAR e FINAL ──────────────────────────────────────────────────────
   { jogo_id: 1400, fase: '3lugar' },
   { jogo_id: 1401, fase: 'final' },
 ];
 
-const FASE_LABELS = {
-  '32avos': '32-avos de Final',
-  'oitavas': 'Oitavas de Final',
-  'quartas': 'Quartas de Final',
-  'semi': 'Semifinal',
-  '3lugar': 'Disputa de 3º Lugar',
-  'final': 'Final'
-};
-
-// Multiplicador de pontos por fase (dobra a partir das quartas)
 function multiplicadorFase(fase) {
   return ['quartas', 'semi', '3lugar', 'final'].includes(fase) ? 2 : 1;
 }
 
 async function initBracket() {
   const { rows } = await pool.query('SELECT COUNT(*) FROM bracket');
-  if (parseInt(rows[0].count) > 0) return; // já inicializado
+  if (parseInt(rows[0].count) > 0) {
+    for (const j of BRACKET_TEMPLATE) {
+      await pool.query(`
+        UPDATE bracket SET destino_vencedor=$2, destino_vencedor_slot=$3, destino_perdedor=$4, destino_perdedor_slot=$5
+        WHERE jogo_id=$1
+      `, [j.jogo_id, j.destino_vencedor || null, j.destino_vencedor_slot || null, j.destino_perdedor || null, j.destino_perdedor_slot || null]);
+    }
+    console.log('Destinos do bracket atualizados!');
+    return;
+  }
   for (const j of BRACKET_TEMPLATE) {
     await pool.query(`
       INSERT INTO bracket (jogo_id, fase, destino_vencedor, destino_vencedor_slot, destino_perdedor, destino_perdedor_slot)
@@ -213,7 +199,6 @@ function calcularPontos(p, r, multiplicador = 1) {
   const ga = parseInt(p.gols_a), gb = parseInt(p.gols_b);
   const ra = parseInt(r.gols_a), rb = parseInt(r.gols_b);
 
-  // Vencedor considerando pênaltis (quem avança de fase)
   let rV;
   if (ra === rb && r.penaltis_a !== null && r.penaltis_b !== null) {
     rV = parseInt(r.penaltis_a) > parseInt(r.penaltis_b) ? 'A' : 'B';
@@ -221,10 +206,8 @@ function calcularPontos(p, r, multiplicador = 1) {
     rV = ra > rb ? 'A' : ra < rb ? 'B' : 'E';
   }
   const pV = ga > gb ? 'A' : ga < gb ? 'B' : 'E';
-
   const twoup = r.twoup_time || null;
 
-  // Placar exato (só conta no tempo normal/prorrogação, não em pênaltis)
   if (ga === ra && gb === rb) {
     return { pts: 3 * multiplicador, tipo: twoup ? '2UP-exato' : 'exato' };
   }
@@ -236,10 +219,6 @@ function calcularPontos(p, r, multiplicador = 1) {
   }
   return { pts: 0, tipo: 'erro' };
 }
-
-// ════════════════════════════════════════════════════════════════════════════
-// ROTAS — FASE DE GRUPOS
-// ════════════════════════════════════════════════════════════════════════════
 
 app.get('/api/jogos', (req, res) => res.json(JOGOS));
 app.get('/api/nomes', (req, res) => res.json(NOMES));
@@ -274,11 +253,6 @@ app.post('/api/resultado', async (req, res) => {
   res.json({ ok: true });
 });
 
-// ════════════════════════════════════════════════════════════════════════════
-// ROTAS — BRACKET DO MATA-MATA
-// ════════════════════════════════════════════════════════════════════════════
-
-// Retorna o bracket completo com times preenchidos
 app.get('/api/bracket', async (req, res) => {
   const { rows } = await pool.query('SELECT * FROM bracket ORDER BY jogo_id');
   const { rows: resultados } = await pool.query('SELECT * FROM resultados WHERE jogo_id >= 1000');
@@ -288,7 +262,6 @@ app.get('/api/bracket', async (req, res) => {
   res.json(bracketComResultado);
 });
 
-// Admin define os times dos 32-avos manualmente
 app.post('/api/bracket/definir-times', async (req, res) => {
   const { senha, jogo_id, time_a, time_b, data, hora, local } = req.body;
   if (senha !== 'admin2026') return res.status(401).json({ error: 'Senha incorreta' });
@@ -298,7 +271,6 @@ app.post('/api/bracket/definir-times', async (req, res) => {
   res.json({ ok: true });
 });
 
-// Admin lança resultado do mata-mata — propaga vencedor/perdedor automaticamente
 app.post('/api/bracket/resultado', async (req, res) => {
   const { senha, jogo_id, gols_a, gols_b, penaltis_a, penaltis_b, twoup_time } = req.body;
   if (senha !== 'admin2026') return res.status(401).json({ error: 'Senha incorreta' });
@@ -307,14 +279,12 @@ app.post('/api/bracket/resultado', async (req, res) => {
   const jogo = bracketRows[0];
   if (!jogo) return res.status(404).json({ error: 'Jogo não encontrado no bracket' });
 
-  // Salva o resultado
   await pool.query(`
     INSERT INTO resultados (jogo_id, gols_a, gols_b, penaltis_a, penaltis_b, twoup_time)
     VALUES ($1,$2,$3,$4,$5,$6)
     ON CONFLICT (jogo_id) DO UPDATE SET gols_a=$2, gols_b=$3, penaltis_a=$4, penaltis_b=$5, twoup_time=$6, atualizado_em=NOW()
   `, [jogo_id, gols_a, gols_b, penaltis_a || null, penaltis_b || null, twoup_time || null]);
 
-  // Determina vencedor e perdedor (considerando pênaltis)
   let vencedorSlot, perdedorSlot;
   if (parseInt(gols_a) === parseInt(gols_b) && penaltis_a !== undefined && penaltis_b !== undefined && penaltis_a !== null) {
     vencedorSlot = parseInt(penaltis_a) > parseInt(penaltis_b) ? 'A' : 'B';
@@ -326,12 +296,10 @@ app.post('/api/bracket/resultado', async (req, res) => {
   const timeVencedor = vencedorSlot === 'A' ? jogo.slot_a : jogo.slot_b;
   const timePerdedor = perdedorSlot === 'A' ? jogo.slot_a : jogo.slot_b;
 
-  // Propaga o vencedor para a próxima fase
   if (jogo.destino_vencedor) {
     const campo = jogo.destino_vencedor_slot === 'A' ? 'slot_a' : 'slot_b';
     await pool.query(`UPDATE bracket SET ${campo} = $1 WHERE jogo_id = $2`, [timeVencedor, jogo.destino_vencedor]);
   }
-  // Propaga o perdedor (só acontece nas semifinais → 3º lugar)
   if (jogo.destino_perdedor) {
     const campo = jogo.destino_perdedor_slot === 'A' ? 'slot_a' : 'slot_b';
     await pool.query(`UPDATE bracket SET ${campo} = $1 WHERE jogo_id = $2`, [timePerdedor, jogo.destino_perdedor]);
@@ -340,7 +308,6 @@ app.post('/api/bracket/resultado', async (req, res) => {
   res.json({ ok: true, vencedor: timeVencedor, perdedor: timePerdedor });
 });
 
-// Palpites do mata-mata (mesma tabela palpites, jogo_id >= 1000)
 app.get('/api/bracket/palpites/:nome', async (req, res) => {
   const { rows } = await pool.query(
     'SELECT jogo_id, gols_a, gols_b FROM palpites WHERE nome = $1 AND jogo_id >= 1000', [req.params.nome]);
@@ -348,10 +315,6 @@ app.get('/api/bracket/palpites/:nome', async (req, res) => {
   rows.forEach(r => { map[r.jogo_id] = [r.gols_a, r.gols_b]; });
   res.json(map);
 });
-
-// ════════════════════════════════════════════════════════════════════════════
-// RANKING COMBINADO — fase de grupos + mata-mata
-// ════════════════════════════════════════════════════════════════════════════
 
 app.get('/api/ranking', async (req, res) => {
   const { rows: todosP } = await pool.query('SELECT * FROM palpites');
@@ -366,7 +329,6 @@ app.get('/api/ranking', async (req, res) => {
   const ranking = NOMES.map(nome => {
     const meus = todosP.filter(p => p.nome === nome);
     let pts = 0, exatos = 0, vencedores = 0, twoup = 0;
-    let ptsGrupos = 0, ptsMataMata = 0;
 
     meus.forEach(p => {
       const r = resMap[p.jogo_id];
@@ -381,23 +343,18 @@ app.get('/api/ranking', async (req, res) => {
 
       const c = calcularPontos(p, r, multiplicador);
       pts += c.pts;
-      if (isMataMata) ptsMataMata += c.pts; else ptsGrupos += c.pts;
 
       if (c.tipo === 'exato') exatos++;
       else if (c.tipo === 'vencedor') vencedores++;
       else if (c.tipo.startsWith('2UP')) twoup++;
     });
 
-    return { nome, pts, ptsGrupos, ptsMataMata, exatos, vencedores, twoup, total: meus.length };
+    return { nome, pts, exatos, vencedores, twoup, total: meus.length };
   });
 
   ranking.sort((a, b) => b.pts - a.pts || b.exatos - a.exatos);
   res.json(ranking);
 });
-
-// ════════════════════════════════════════════════════════════════════════════
-// RESULTADOS POR DIA (fase de grupos)
-// ════════════════════════════════════════════════════════════════════════════
 
 app.get('/api/resultados-dia', async (req, res) => {
   const { dia } = req.query;
@@ -432,10 +389,6 @@ app.get('/api/dias', (req, res) => {
   });
   res.json(dias);
 });
-
-// ════════════════════════════════════════════════════════════════════════════
-// BACKUP
-// ════════════════════════════════════════════════════════════════════════════
 
 app.get('/api/backup', async (req, res) => {
   const { senha } = req.query;
