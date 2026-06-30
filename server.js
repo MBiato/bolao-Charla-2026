@@ -199,12 +199,10 @@ function calcularPontos(p, r, multiplicador = 1) {
   const ga = parseInt(p.gols_a), gb = parseInt(p.gols_b);
   const ra = parseInt(r.gols_a), rb = parseInt(r.gols_b);
 
-  let rV;
-  if (ra === rb && r.penaltis_a !== null && r.penaltis_b !== null) {
-    rV = parseInt(r.penaltis_a) > parseInt(r.penaltis_b) ? 'A' : 'B';
-  } else {
-    rV = ra > rb ? 'A' : ra < rb ? 'B' : 'E';
-  }
+  // Vencedor SEMPRE baseado no placar do tempo normal/prorrogação.
+  // Pênaltis NUNCA contam para pontuação — servem apenas para definir
+  // quem avança de fase no chaveamento (ver rota /api/bracket/resultado).
+  const rV = ra > rb ? 'A' : ra < rb ? 'B' : 'E';
   const pV = ga > gb ? 'A' : ga < gb ? 'B' : 'E';
   const twoup = r.twoup_time || null;
 
